@@ -1,0 +1,3 @@
+export const routes = [
+  { path: '/', component: { template: '<h1>Vue 2 ESMX</h1>' } }
+];

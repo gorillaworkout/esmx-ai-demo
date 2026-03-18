@@ -1,0 +1,1 @@
+export const __rspack_esm_id="586";export const __rspack_esm_ids=["586"];export const __webpack_modules__={281(_){_.exports=import("vue3-app-routes").then(function(_){return _})}};

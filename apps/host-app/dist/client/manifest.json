@@ -1,0 +1,47 @@
+{
+    "name": "host-app",
+    "exports": {
+        "src/entry.client": {
+            "name": "src/entry.client",
+            "pkg": false,
+            "file": "src/entry.client.3b2f253f.final.mjs",
+            "identifier": "host-app/src/entry.client"
+        }
+    },
+    "scopes": {
+        "vue2-app/": {
+            "vue": "vue2-app/vue",
+            "@esmx/router-vue": "vue2-app/@esmx/router-vue"
+        },
+        "": {
+            "react-app-routes": "react-app/src/routes.tsx",
+            "vue3-app-routes": "vue3-app/src/routes.ts",
+            "vue2-app-routes": "vue2-app/src/routes.ts",
+            "react": "react-app/react",
+            "react-dom": "react-app/react-dom",
+            "react-dom/client": "react-app/react-dom/client",
+            "react-dom/server": "react-app/react-dom/server",
+            "vue": "vue3-app/vue",
+            "vue-server-renderer": "vue2-app/vue-server-renderer",
+            "@vue/server-renderer": "vue3-app/@vue/server-renderer",
+            "@esmx/router-react": "react-app/@esmx/router-react",
+            "@esmx/router-vue": "vue3-app/@esmx/router-vue"
+        }
+    },
+    "files": [
+        "src/entry.client.3b2f253f.final.mjs",
+        "chunks/911.40d01401.final.mjs",
+        "chunks/526.5c59b43a.final.mjs",
+        "chunks/586.c2f14cc2.final.mjs",
+        "chunks/982.2ba63895.final.mjs",
+        "chunks/337.546316dc.final.mjs"
+    ],
+    "chunks": {
+        "host-app@src/entry.client.ts": {
+            "name": "host-app@src/entry.client.ts",
+            "js": "src/entry.client.3b2f253f.final.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

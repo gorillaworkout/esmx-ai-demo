@@ -1,5 +1,5 @@
 {
-  "name": "vue3-app",
+  "name": "vue2-app",
   "type": "module",
   "scripts": {
     "dev": "node --experimental-vm-modules node_modules/@esmx/core/dist/cli/index.mjs dev",
@@ -7,16 +7,16 @@
     "start": "node node_modules/@esmx/core/dist/cli/index.mjs start"
   },
   "dependencies": {
-    "@vue/server-renderer": "^3.4.0",
-    "vue": "^3.4.0",
     "@esmx/core": "^3.0.0-rc.112",
     "@esmx/router": "^3.0.0-rc.112",
-    "@esmx/router-vue": "^3.0.0-rc.112"
+    "@esmx/router-vue": "^3.0.0-rc.112",
+    "vue": "^2.7.16"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
     "@esmx/rspack": "^3.0.0-rc.112",
-    "@esmx/rspack-vue": "^3.0.0-rc.112"
+    "@esmx/rspack-vue": "^3.0.0-rc.112",
+    "vue-server-renderer": "^2.7.16",
+    "vue-template-compiler": "^2.7.16",
+    "typescript": "^5.0.0"
   }
 }

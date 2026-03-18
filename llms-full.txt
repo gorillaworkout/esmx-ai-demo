@@ -10325,3 +10325,123 @@ export default async function render(rc: RenderContext) {
   `;
 }
 ```
+
+## Micro-Frontend Host Setup (Multi-Framework Orchestration)
+
+If you are building a Micro-Frontend that combines multiple apps (e.g., React, Vue 3, Vue 2) into a single URL space, you need a **Host App**. The host app coordinates routing and shares dependencies.
+
+### 1. Host `entry.node.ts` (Linking and Dependency Sharing)
+The host must define `links` to the remote apps' `dist` folders, `imports` to share dependencies and routes, and `scopes` to isolate conflicting versions (e.g., Vue 2 vs Vue 3).
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+import http from 'http';
+
+export default {
+  modules: {
+    links: {
+      'react-app': '../react-app/dist',
+      'vue3-app': '../vue3-app/dist',
+      'vue2-app': '../vue2-app/dist'
+    },
+    imports: {
+      // Import routes from remotes
+      'react-app-routes': 'react-app/src/routes.tsx',
+      'vue3-app-routes': 'vue3-app/src/routes.ts',
+      'vue2-app-routes': 'vue2-app/src/routes.ts',
+      
+      // Share libraries to avoid downloading them multiple times
+      'react': 'react-app/react',
+      'react-dom': 'react-app/react-dom',
+      'react-dom/client': 'react-app/react-dom/client',
+      'react-dom/server': 'react-app/react-dom/server',
+      'vue': 'vue3-app/vue', // Default Vue is Vue 3
+      '@esmx/router-react': 'react-app/@esmx/router-react',
+      '@esmx/router-vue': 'vue3-app/@esmx/router-vue'
+    },
+    scopes: {
+      // Isolate Vue 2 into its own scope so it doesn't conflict with Vue 3
+      'vue2-app/': {
+        'vue': 'vue2-app/vue',
+        'vue-server-renderer': 'vue2-app/vue-server-renderer',
+        '@esmx/router-vue': 'vue2-app/@esmx/router-vue'
+      }
+    }
+  },
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m => m.createRspackHtmlApp(esmx));
+  },
+  async server(esmx) {
+    const server = http.createServer((req, res) => {
+      esmx.middleware(req, res, async () => {
+        const rc = await esmx.render({ params: { url: req.url } });
+        res.setHeader('Content-Type', 'text/html');
+        res.end(rc.html);
+      });
+    });
+    server.listen(3000);
+  }
+} satisfies EsmxOptions;
+```
+
+### 2. Host `src/routes.ts`
+Map URL paths to the remote apps.
+
+```ts title="src/routes.ts"
+export const routes = [
+  {
+    path: '/',
+    component: { template: '<h1>Micro-Frontend Host</h1>' }
+  },
+  {
+    path: '/react',
+    app: 'react-app',
+    asyncComponent: () => import('react-app-routes') // The exported routes from React App
+  },
+  {
+    path: '/vue3',
+    app: 'vue3-app',
+    asyncComponent: () => import('vue3-app-routes')
+  }
+];
+```
+
+### 3. Host `entry.server.ts` & `entry.client.ts`
+You must register the framework-specific `createMicroApp()` handlers so the Router knows how to mount/unmount the different frameworks.
+
+```ts title="src/entry.server.ts"
+import { Router, RouterMode } from '@esmx/router';
+import { routes } from './routes.ts';
+
+export default async function render(rc) {
+  const router = new Router({
+    mode: RouterMode.memory,
+    base: new URL(rc.params.url || '/', 'http://localhost'),
+    routes,
+    apps: {
+      'react-app': () => import('@esmx/router-react').then(m => m.createMicroApp()),
+      'vue3-app': () => import('@esmx/router-vue').then(m => m.createMicroApp()),
+      'vue2-app': () => import('@esmx/router-vue').then(m => m.createMicroApp())
+    }
+  });
+
+  await router.push(rc.params.url || '/');
+  const html = await router.renderToString(rc);
+  
+  await rc.commit();
+  rc.html = `
+    <!DOCTYPE html>
+    <html>
+      <head>${rc.preload()}${rc.css()}</head>
+      <body>
+        <div id="app">${html}</div>
+        ${rc.importmap()}
+        ${rc.moduleEntry()}
+        ${rc.modulePreload()}
+      </body>
+    </html>
+  `;
+}
+```
+
+*Note: For `entry.client.ts`, the setup is identical, but uses `RouterMode.history` and hydrates the root element.*

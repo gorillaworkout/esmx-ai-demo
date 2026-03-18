@@ -1,0 +1,24 @@
+{
+    "name": "host-app",
+    "exports": {
+        "src/entry.node": {
+            "name": "src/entry.node",
+            "pkg": false,
+            "file": "src/entry.node.mjs",
+            "identifier": "host-app/src/entry.node"
+        }
+    },
+    "scopes": {},
+    "files": [
+        "chunks/112.e0930aa3.final.mjs",
+        "src/entry.node.mjs"
+    ],
+    "chunks": {
+        "host-app@src/entry.node.ts": {
+            "name": "host-app@src/entry.node.ts",
+            "js": "src/entry.node.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

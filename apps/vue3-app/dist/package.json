@@ -1,0 +1,40 @@
+{
+    "name": "vue3-app",
+    "type": "module",
+    "scripts": {
+        "dev": "node --experimental-vm-modules node_modules/@esmx/core/dist/cli/index.mjs dev",
+        "build": "node --experimental-vm-modules node_modules/@esmx/core/dist/cli/index.mjs build",
+        "start": "node node_modules/@esmx/core/dist/cli/index.mjs start"
+    },
+    "dependencies": {
+        "@vue/server-renderer": "^3.4.0",
+        "vue": "^3.4.0",
+        "@esmx/core": "^3.0.0-rc.112",
+        "@esmx/router": "^3.0.0-rc.112",
+        "@esmx/router-vue": "^3.0.0-rc.112"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "typescript": "^5.0.0",
+        "@esmx/rspack": "^3.0.0-rc.112",
+        "@esmx/rspack-vue": "^3.0.0-rc.112"
+    },
+    "exports": {
+        "./src/routes": {
+            "default": "./server/src/routes.4d9243bd.final.mjs",
+            "browser": "./client/src/routes.565b2f6c.final.mjs"
+        },
+        "./vue": {
+            "default": "./server/vue.849a697b.final.mjs",
+            "browser": "./client/vue.eedf49f5.final.mjs"
+        },
+        "./@vue/server-renderer": {
+            "default": "./server/@vue/server-renderer.b58c8b19.final.mjs",
+            "browser": "./client/@vue/server-renderer.84c157c0.final.mjs"
+        },
+        "./@esmx/router-vue": {
+            "default": "./server/@esmx/router-vue.3452a9a7.final.mjs",
+            "browser": "./client/@esmx/router-vue.d32c91d0.final.mjs"
+        }
+    }
+}
