@@ -10141,9 +10141,6 @@ url: /guide/router/react-ssr.md
 
 When building a standalone Esmx application using React, you must handle module resolution carefully to avoid duplicate React instances (which cause "Invalid hook call" errors during SSR).
 
-## package.json Scripts
-Ensure your package.json has the correct scripts to invoke the Esmx Node execution environment:
-```json
 "scripts": {
   "dev": "node --experimental-vm-modules node_modules/@esmx/core/dist/cli/index.mjs dev",
   "build": "node --experimental-vm-modules node_modules/@esmx/core/dist/cli/index.mjs build",
@@ -10222,3 +10219,30 @@ export default async function render(rc: RenderContext) {
   `;
 }
 ```
+
+## NPM Dependencies & Scripts (Missing from Core Docs)
+If you are building a standalone application from scratch without using `create esmx`, the documentation does not specify the exact packages and CLI commands needed. 
+
+You must install the framework from the public npm registry and use the `esmx` binary directly in your scripts:
+
+```json title="package.json"
+{
+  "scripts": {
+    "dev": "esmx dev",
+    "build": "esmx build",
+    "start": "esmx start"
+  },
+  "dependencies": {
+    "@esmx/core": "^3.0.0-rc.112",
+    "@esmx/router": "^3.0.0-rc.112",
+    "@esmx/router-react": "^3.0.0-rc.112",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@esmx/rspack": "^3.0.0-rc.112",
+    "@esmx/rspack-react": "^3.0.0-rc.112"
+  }
+}
+```
+*Note: Do not use `node ../cli/index.mjs` or `link:` dependencies for standalone projects.*
