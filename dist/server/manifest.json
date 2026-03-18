@@ -4,7 +4,7 @@
         "src/entry.server": {
             "name": "src/entry.server",
             "pkg": false,
-            "file": "src/entry.server.mjs",
+            "file": "src/entry.server.d010da36.final.mjs",
             "identifier": "esmx-ai-demo/src/entry.server"
         }
     },
@@ -12,12 +12,12 @@
         "": {}
     },
     "files": [
-        "src/entry.server.mjs"
+        "src/entry.server.d010da36.final.mjs"
     ],
     "chunks": {
         "esmx-ai-demo@src/entry.server.tsx": {
             "name": "esmx-ai-demo@src/entry.server.tsx",
-            "js": "src/entry.server.mjs",
+            "js": "src/entry.server.d010da36.final.mjs",
             "css": [],
             "resources": []
         }

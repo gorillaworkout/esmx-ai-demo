@@ -4,7 +4,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
-            "file": "src/entry.client.mjs",
+            "file": "src/entry.client.077e8448.final.mjs",
             "identifier": "esmx-ai-demo/src/entry.client"
         }
     },
@@ -12,12 +12,12 @@
         "": {}
     },
     "files": [
-        "src/entry.client.mjs"
+        "src/entry.client.077e8448.final.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@../esmx/node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js": {
-            "name": "esmx-ai-demo@../esmx/node_modules/.pnpm/webpack-hot-middleware@2.26.1/node_modules/webpack-hot-middleware/client.js",
-            "js": "src/entry.client.mjs",
+        "esmx-ai-demo@src/entry.client.tsx": {
+            "name": "esmx-ai-demo@src/entry.client.tsx",
+            "js": "src/entry.client.077e8448.final.mjs",
             "css": [],
             "resources": []
         }

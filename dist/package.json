@@ -4,7 +4,9 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "dev": "node --experimental-vm-modules ../esmx/packages/core/dist/cli/index.mjs dev",
+        "build": "node --experimental-vm-modules ../esmx/packages/core/dist/cli/index.mjs build",
+        "start": "node ../esmx/packages/core/dist/cli/index.mjs start"
     },
     "keywords": [],
     "author": "",
@@ -12,18 +14,19 @@
     "dependencies": {
         "@esmx/core": "link:../esmx/packages/core",
         "@esmx/router": "link:../esmx/packages/router",
-        "@esmx/router-react": "link:../esmx/packages/router-react",
-        "@esmx/rspack": "link:../esmx/packages/rspack"
+        "@esmx/router-react": "link:../esmx/packages/router-react"
     },
     "devDependencies": {
+        "@esmx/rspack": "link:../esmx/packages/rspack",
+        "@esmx/rspack-react": "link:../esmx/packages/rspack-react",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
         "typescript": "^5.9.3"
     },
     "exports": {
-        "./src/entry.client": "./client/src/entry.client.759fd495.final.mjs",
-        "./src/entry.server": "./server/src/entry.server.c89194a4.final.mjs"
+        "./src/entry.client": "./client/src/entry.client.077e8448.final.mjs",
+        "./src/entry.server": "./server/src/entry.server.d010da36.final.mjs"
     }
 }

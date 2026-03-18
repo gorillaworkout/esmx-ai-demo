@@ -1,23 +1,20 @@
 import type { EsmxOptions } from '@esmx/core';
+import { createRequire } from 'module';
 import http from 'http';
+
+const require = createRequire(import.meta.url);
 
 export default {
   async devApp(esmx) {
-    return import('@esmx/rspack').then(m =>
-      m.createRspackHtmlApp(esmx, {
+    return import('@esmx/rspack-react').then(m =>
+      m.createRspackReactApp(esmx, {
         chain({ chain }) {
-          chain.module
-            .rule('react')
-            .test(/\.(jsx?|tsx?)$/)
-            .use('swc')
-            .loader('builtin:swc-loader')
-            .options({
-              jsc: {
-                parser: { syntax: 'typescript', tsx: true },
-                transform: { react: { runtime: 'automatic' } }
-              }
-            });
-          chain.resolve.extensions.add('.tsx').add('.jsx');
+          // STANDALONE FIX: Force Rspack to resolve a single instance of React
+          chain.resolve.alias
+            .set('react', require.resolve('react'))
+            .set('react-dom/server', require.resolve('react-dom/server'))
+            .set('react-dom/client', require.resolve('react-dom/client'))
+            .set('react-dom', require.resolve('react-dom'));
         }
       })
     );
@@ -34,7 +31,7 @@ export default {
         } catch (e) {
           console.error(e);
           res.statusCode = 500;
-          res.end('Internal Server Error');
+          res.end('Internal Server Error: ' + e.message);
         }
       });
     });
