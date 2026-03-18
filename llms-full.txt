@@ -10419,9 +10419,9 @@ export default async function render(rc) {
     base: new URL(rc.params.url || '/', 'http://localhost'),
     routes,
     apps: {
-      'react-app': () => import('@esmx/router-react').then(m => m.createMicroApp()),
-      'vue3-app': () => import('@esmx/router-vue').then(m => m.createMicroApp()),
-      'vue2-app': () => import('@esmx/router-vue').then(m => m.createMicroApp())
+      'react-app': () => import('@esmx/router-react').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))()),
+      'vue3-app': () => import('@esmx/router-vue').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))()),
+      'vue2-app': () => import('@esmx/router-vue').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))())
     }
   });
 
@@ -10444,4 +10444,6 @@ export default async function render(rc) {
 }
 ```
 
-*Note: For `entry.client.ts`, the setup is identical, but uses `RouterMode.history` and hydrates the root element.*
+> **CRITICAL CJS/ESM INTEROP NOTE:** Depending on the package manager and bundler output format, dynamic imports of router packages within a Host App might place the exported functions inside a `.default` object. Always extract `createMicroApp` safely using `(m.createMicroApp || m.default.createMicroApp)()` as shown above.
+
+*Note: For `entry.client.ts`, the setup is identical (using the same safe import logic), but uses `RouterMode.history` and hydrates the root element.*
