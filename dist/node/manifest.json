@@ -1,0 +1,24 @@
+{
+    "name": "esmx-ai-demo",
+    "exports": {
+        "src/entry.node": {
+            "name": "src/entry.node",
+            "pkg": false,
+            "file": "src/entry.node.mjs",
+            "identifier": "esmx-ai-demo/src/entry.node"
+        }
+    },
+    "scopes": {},
+    "files": [
+        "chunks/112.e0930aa3.final.mjs",
+        "src/entry.node.mjs"
+    ],
+    "chunks": {
+        "esmx-ai-demo@src/entry.node.ts": {
+            "name": "esmx-ai-demo@src/entry.node.ts",
+            "js": "src/entry.node.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

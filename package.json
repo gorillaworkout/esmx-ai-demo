@@ -1,0 +1,25 @@
+{
+  "name": "esmx-ai-demo",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@esmx/core": "link:../esmx/packages/core",
+    "@esmx/router": "link:../esmx/packages/router",
+    "@esmx/router-react": "link:../esmx/packages/router-react",
+    "@esmx/rspack": "link:../esmx/packages/rspack"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.9.3"
+  }
+}

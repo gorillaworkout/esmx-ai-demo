@@ -1,0 +1,12 @@
+ESMX React Demo server running at http://localhost:3004
+Error: App instance is only available in production and can only execute built artifacts.
+    at Esmx.<anonymous> (file:///home/ubuntu/apps/esmx/packages/core/dist/app.mjs:30:11)
+    at file:///home/ubuntu/apps/ESMX-AI-DEMO/server.js:12:31
+    at dispatch (file:///home/ubuntu/apps/esmx/packages/core/dist/utils/middleware.mjs:47:9)
+    at file:///home/ubuntu/apps/esmx/packages/core/dist/utils/middleware.mjs:43:11
+    at Array.<anonymous> (file:///home/ubuntu/apps/esmx/packages/core/dist/utils/middleware.mjs:16:11)
+    at dispatch (file:///home/ubuntu/apps/esmx/packages/core/dist/utils/middleware.mjs:41:27)
+    at Esmx.<anonymous> (file:///home/ubuntu/apps/esmx/packages/core/dist/utils/middleware.mjs:50:5)
+    at Server.<anonymous> (file:///home/ubuntu/apps/ESMX-AI-DEMO/server.js:10:10)
+    at Server.emit (node:events:519:28)
+    at parserOnIncoming (node:_http_server:1186:12)

@@ -1,0 +1,3 @@
+overrides:
+  '@esmx/core': link:../esmx/packages/core
+  '@esmx/rspack': link:../esmx/packages/rspack
