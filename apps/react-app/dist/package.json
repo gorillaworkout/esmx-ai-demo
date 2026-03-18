@@ -23,26 +23,7 @@
         "typescript": "^5.9.3"
     },
     "exports": {
-        "./src/routes": {
-            "default": "./server/src/routes.70798680.final.mjs",
-            "browser": "./client/src/routes.a852e727.final.mjs"
-        },
-        "./react": {
-            "default": "./server/react.8fb605d4.final.mjs",
-            "browser": "./client/react.6bc70972.final.mjs"
-        },
-        "./react-dom": {
-            "default": "./server/react-dom.f760726a.final.mjs",
-            "browser": "./client/react-dom.88714d9f.final.mjs"
-        },
-        "./react-dom/client": {
-            "default": "./server/react-dom/client.e636f886.final.mjs",
-            "browser": "./client/react-dom/client.8a285092.final.mjs"
-        },
-        "./@esmx/router-react": {
-            "default": "./server/@esmx/router-react.ccf6e7db.final.mjs",
-            "browser": "./client/@esmx/router-react.6232c452.final.mjs"
-        },
-        "./react-dom/server": "./server/react-dom/server.abe33b90.final.mjs"
+        "./src/entry.client": "./client/src/entry.client.c75784ca.final.mjs",
+        "./src/entry.server": "./server/src/entry.server.e0f9387a.final.mjs"
     }
 }

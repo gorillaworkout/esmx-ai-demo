@@ -4,28 +4,23 @@ import http from 'http';
 export default {
   modules: {
     links: {
-      'react-app': '../react-app/dist',
       'vue3-app': '../vue3-app/dist',
       'vue2-app': '../vue2-app/dist'
     },
     imports: {
-      // Connect host paths to the child apps' routers
-      'react-app-routes': 'react-app/src/routes.tsx',
-      'vue3-app-routes': 'vue3-app/src/routes.ts',
-      'vue2-app-routes': 'vue2-app/src/routes.ts',
-      // Share libraries to prevent duplicates
-      'react': 'react-app/react',
-      'react-dom': 'react-app/react-dom',
-      'react-dom/client': 'react-app/react-dom/client',
-      'react-dom/server': 'react-app/react-dom/server',
+      'vue3-app-routes': 'vue3-app/src/routes',
+      'vue3-app-creator': 'vue3-app/src/app-creator',
+      'vue3-app-render': 'vue3-app/src/render-to-str',
+      
+      'vue2-app-routes': 'vue2-app/src/routes',
+      'vue2-app-creator': 'vue2-app/src/app-creator',
+      'vue2-app-render': 'vue2-app/src/render-to-str',
+      
       'vue': 'vue3-app/vue',
-      'vue-server-renderer': 'vue2-app/vue-server-renderer',
       '@vue/server-renderer': 'vue3-app/@vue/server-renderer',
-      '@esmx/router-react': 'react-app/@esmx/router-react',
       '@esmx/router-vue': 'vue3-app/@esmx/router-vue'
     },
     scopes: {
-      // Scope vue2 specifically for the vue2-app components
       'vue2-app/': {
         'vue': 'vue2-app/vue',
         '@esmx/router-vue': 'vue2-app/@esmx/router-vue'
@@ -33,7 +28,7 @@ export default {
     }
   },
   async devApp(esmx) {
-    return import('@esmx/rspack').then(m => m.createRspackHtmlApp(esmx));
+    return import('@esmx/rspack-vue').then(m => m.createRspackVue3App(esmx));
   },
   async server(esmx) {
     const server = http.createServer((req, res) => {
@@ -49,6 +44,6 @@ export default {
         }
       });
     });
-    server.listen(3000, () => console.log('HOST APP running on http://localhost:3000'));
+    server.listen(3004, () => console.log('HOST APP running on http://localhost:3004'));
   }
 } satisfies EsmxOptions;

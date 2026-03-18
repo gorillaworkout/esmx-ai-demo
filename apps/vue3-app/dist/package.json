@@ -24,6 +24,10 @@
             "default": "./server/src/routes.4d9243bd.final.mjs",
             "browser": "./client/src/routes.565b2f6c.final.mjs"
         },
+        "./src/app-creator": {
+            "default": "./server/src/app-creator.464529a9.final.mjs",
+            "browser": "./client/src/app-creator.6c0f1b8d.final.mjs"
+        },
         "./vue": {
             "default": "./server/vue.849a697b.final.mjs",
             "browser": "./client/vue.eedf49f5.final.mjs"
@@ -35,6 +39,7 @@
         "./@esmx/router-vue": {
             "default": "./server/@esmx/router-vue.3452a9a7.final.mjs",
             "browser": "./client/@esmx/router-vue.d32c91d0.final.mjs"
-        }
+        },
+        "./src/render-to-str": "./server/src/render-to-str.9c0a8f56.final.mjs"
     }
 }

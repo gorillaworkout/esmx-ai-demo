@@ -14,9 +14,9 @@ importers:
       '@esmx/router':
         specifier: ^3.0.0-rc.112
         version: 3.0.0-rc.112
-      react:
-        specifier: ^19.2.0
-        version: 19.2.4
+      '@esmx/router-vue':
+        specifier: ^3.0.0-rc.112
+        version: 3.0.0-rc.112(vue@3.5.30(typescript@5.9.3))
       vue:
         specifier: ^3.4.0
         version: 3.5.30(typescript@5.9.3)
@@ -24,6 +24,15 @@ importers:
       '@esmx/rspack':
         specifier: ^3.0.0-rc.112
         version: 3.0.0-rc.112(@esmx/core@3.0.0-rc.112)(less@4.6.4)(webpack@5.105.4)
+      '@esmx/rspack-vue':
+        specifier: ^3.0.0-rc.112
+        version: 3.0.0-rc.112(@esmx/core@3.0.0-rc.112)(@vue/compiler-sfc@3.5.30)(css-loader@7.1.4(@rspack/core@1.7.5)(webpack@5.105.4))(less@4.6.4)(vue@3.5.30(typescript@5.9.3))(webpack@5.105.4)
+      '@vue/server-renderer':
+        specifier: ^3.4.0
+        version: 3.5.30(vue@3.5.30(typescript@5.9.3))
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
 
   apps/react-app:
     dependencies:

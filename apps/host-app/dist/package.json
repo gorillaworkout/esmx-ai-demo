@@ -9,14 +9,17 @@
     "dependencies": {
         "@esmx/core": "^3.0.0-rc.112",
         "@esmx/router": "^3.0.0-rc.112",
-        "react": "^19.2.0",
+        "@esmx/router-vue": "^3.0.0-rc.112",
         "vue": "^3.4.0"
     },
     "devDependencies": {
-        "@esmx/rspack": "^3.0.0-rc.112"
+        "@esmx/rspack": "^3.0.0-rc.112",
+        "@esmx/rspack-vue": "^3.0.0-rc.112",
+        "@vue/server-renderer": "^3.4.0",
+        "typescript": "^5.0.0"
     },
     "exports": {
-        "./src/entry.client": "./client/src/entry.client.3b2f253f.final.mjs",
-        "./src/entry.server": "./server/src/entry.server.513a220e.final.mjs"
+        "./src/entry.client": "./client/src/entry.client.16fb2827.final.mjs",
+        "./src/entry.server": "./server/src/entry.server.254da733.final.mjs"
     }
 }

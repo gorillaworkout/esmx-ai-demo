@@ -7,6 +7,12 @@
             "file": "src/routes.c572c263.final.mjs",
             "identifier": "vue2-app/src/routes"
         },
+        "src/app-creator": {
+            "name": "src/app-creator",
+            "pkg": false,
+            "file": "src/app-creator.fecb4024.final.mjs",
+            "identifier": "vue2-app/src/app-creator"
+        },
         "vue": {
             "name": "vue",
             "pkg": true,
@@ -35,14 +41,21 @@
     },
     "files": [
         "vue-server-renderer.2aa5ab38.final.mjs",
-        "src/routes.c572c263.final.mjs",
         "@esmx/router-vue.d32c91d0.final.mjs",
-        "vue.308b5600.final.mjs"
+        "src/routes.c572c263.final.mjs",
+        "vue.308b5600.final.mjs",
+        "src/app-creator.fecb4024.final.mjs"
     ],
     "chunks": {
         "vue2-app@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.runtime.esm.js": {
             "name": "vue2-app@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.runtime.esm.js",
             "js": "vue.308b5600.final.mjs",
+            "css": [],
+            "resources": []
+        },
+        "vue2-app@src/app-creator.ts": {
+            "name": "vue2-app@src/app-creator.ts",
+            "js": "src/app-creator.fecb4024.final.mjs",
             "css": [],
             "resources": []
         },

@@ -1,19 +1,9 @@
 import type { EsmxOptions } from '@esmx/core';
 import { createRequire } from 'module';
+import http from 'http';
 const require = createRequire(import.meta.url);
 
 export default {
-  modules: {
-    lib: true,
-    exports: [
-      'root:src/routes.tsx',
-      'pkg:react',
-      'pkg:react-dom',
-      'pkg:react-dom/client',
-      { 'react-dom/server': { client: false, server: 'pkg:react-dom/server' } },
-      'pkg:@esmx/router-react'
-    ]
-  },
   async devApp(esmx) {
     return import('@esmx/rspack-react').then(m =>
       m.createRspackReactApp(esmx, {
@@ -26,5 +16,21 @@ export default {
         }
       })
     );
+  },
+  async server(esmx) {
+    const server = http.createServer((req, res) => {
+      esmx.middleware(req, res, async () => {
+        try {
+          const rc = await esmx.render({ params: { url: req.url } });
+          res.setHeader('Content-Type', 'text/html');
+          res.end(rc.html);
+        } catch (e) {
+          console.error(e);
+          res.statusCode = 500;
+          res.end(e.message);
+        }
+      });
+    });
+    server.listen(3007, () => console.log('React App running on http://localhost:3007'));
   }
 } satisfies EsmxOptions;

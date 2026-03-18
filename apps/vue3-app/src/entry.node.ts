@@ -5,6 +5,13 @@ export default {
     lib: true,
     exports: [
       'root:src/routes.ts',
+      'root:src/app-creator.ts',
+      {
+        'src/render-to-str': {
+          client: false,
+          server: './src/render-to-str.ts'
+        }
+      },
       'pkg:vue',
       'pkg:@vue/server-renderer',
       'pkg:@esmx/router-vue'

@@ -7,6 +7,12 @@
             "file": "src/routes.565b2f6c.final.mjs",
             "identifier": "vue3-app/src/routes"
         },
+        "src/app-creator": {
+            "name": "src/app-creator",
+            "pkg": false,
+            "file": "src/app-creator.6c0f1b8d.final.mjs",
+            "identifier": "vue3-app/src/app-creator"
+        },
         "vue": {
             "name": "vue",
             "pkg": true,
@@ -34,6 +40,7 @@
         }
     },
     "files": [
+        "src/app-creator.6c0f1b8d.final.mjs",
         "src/routes.565b2f6c.final.mjs",
         "@vue/server-renderer.84c157c0.final.mjs",
         "@esmx/router-vue.d32c91d0.final.mjs",
@@ -43,6 +50,12 @@
         "vue3-app@../../node_modules/.pnpm/vue@3.5.30_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-browser.prod.js": {
             "name": "vue3-app@../../node_modules/.pnpm/vue@3.5.30_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-browser.prod.js",
             "js": "vue.eedf49f5.final.mjs",
+            "css": [],
+            "resources": []
+        },
+        "vue3-app@src/app-creator.ts": {
+            "name": "vue3-app@src/app-creator.ts",
+            "js": "src/app-creator.6c0f1b8d.final.mjs",
             "css": [],
             "resources": []
         },

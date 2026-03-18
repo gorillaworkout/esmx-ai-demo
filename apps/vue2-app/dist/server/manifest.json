@@ -7,6 +7,18 @@
             "file": "src/routes.f2e51d07.final.mjs",
             "identifier": "vue2-app/src/routes"
         },
+        "src/app-creator": {
+            "name": "src/app-creator",
+            "pkg": false,
+            "file": "src/app-creator.ee585225.final.mjs",
+            "identifier": "vue2-app/src/app-creator"
+        },
+        "src/render-to-str": {
+            "name": "src/render-to-str",
+            "pkg": false,
+            "file": "src/render-to-str.2e993e1a.final.mjs",
+            "identifier": "vue2-app/src/render-to-str"
+        },
         "vue": {
             "name": "vue",
             "pkg": true,
@@ -36,13 +48,21 @@
     "files": [
         "src/routes.f2e51d07.final.mjs",
         "@esmx/router-vue.3955d580.final.mjs",
+        "src/render-to-str.2e993e1a.final.mjs",
         "vue.4bad944d.final.mjs",
+        "src/app-creator.ee585225.final.mjs",
         "vue-server-renderer.aaf16f4d.final.mjs"
     ],
     "chunks": {
         "vue2-app@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.runtime.esm.js": {
             "name": "vue2-app@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.runtime.esm.js",
             "js": "vue.4bad944d.final.mjs",
+            "css": [],
+            "resources": []
+        },
+        "vue2-app@src/app-creator.ts": {
+            "name": "vue2-app@src/app-creator.ts",
+            "js": "src/app-creator.ee585225.final.mjs",
             "css": [],
             "resources": []
         },
@@ -61,6 +81,12 @@
         "vue2-app@../../node_modules/.pnpm/vue-server-renderer@2.7.16/node_modules/vue-server-renderer/index.js": {
             "name": "vue2-app@../../node_modules/.pnpm/vue-server-renderer@2.7.16/node_modules/vue-server-renderer/index.js",
             "js": "vue-server-renderer.aaf16f4d.final.mjs",
+            "css": [],
+            "resources": []
+        },
+        "vue2-app@src/render-to-str.ts": {
+            "name": "vue2-app@src/render-to-str.ts",
+            "js": "src/render-to-str.2e993e1a.final.mjs",
             "css": [],
             "resources": []
         }

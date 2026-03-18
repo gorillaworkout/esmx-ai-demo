@@ -9,10 +9,13 @@
   "dependencies": {
     "@esmx/core": "^3.0.0-rc.112",
     "@esmx/router": "^3.0.0-rc.112",
-    "react": "^19.2.0",
+    "@esmx/router-vue": "^3.0.0-rc.112",
     "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@esmx/rspack": "^3.0.0-rc.112"
+    "@esmx/rspack": "^3.0.0-rc.112",
+    "@esmx/rspack-vue": "^3.0.0-rc.112",
+    "@vue/server-renderer": "^3.4.0",
+    "typescript": "^5.0.0"
   }
 }

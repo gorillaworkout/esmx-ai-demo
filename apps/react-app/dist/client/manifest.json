@@ -1,80 +1,23 @@
 {
     "name": "esmx-ai-demo",
     "exports": {
-        "src/routes": {
-            "name": "src/routes",
+        "src/entry.client": {
+            "name": "src/entry.client",
             "pkg": false,
-            "file": "src/routes.a852e727.final.mjs",
-            "identifier": "esmx-ai-demo/src/routes"
-        },
-        "react": {
-            "name": "react",
-            "pkg": true,
-            "file": "react.6bc70972.final.mjs",
-            "identifier": "esmx-ai-demo/react"
-        },
-        "react-dom": {
-            "name": "react-dom",
-            "pkg": true,
-            "file": "react-dom.88714d9f.final.mjs",
-            "identifier": "esmx-ai-demo/react-dom"
-        },
-        "react-dom/client": {
-            "name": "react-dom/client",
-            "pkg": true,
-            "file": "react-dom/client.8a285092.final.mjs",
-            "identifier": "esmx-ai-demo/react-dom/client"
-        },
-        "@esmx/router-react": {
-            "name": "@esmx/router-react",
-            "pkg": true,
-            "file": "@esmx/router-react.6232c452.final.mjs",
-            "identifier": "esmx-ai-demo/@esmx/router-react"
+            "file": "src/entry.client.c75784ca.final.mjs",
+            "identifier": "esmx-ai-demo/src/entry.client"
         }
     },
     "scopes": {
-        "": {
-            "react": "esmx-ai-demo/react",
-            "react-dom": "esmx-ai-demo/react-dom",
-            "react-dom/client": "esmx-ai-demo/react-dom/client",
-            "@esmx/router-react": "esmx-ai-demo/@esmx/router-react"
-        }
+        "": {}
     },
     "files": [
-        "src/routes.a852e727.final.mjs",
-        "react-dom/client.8a285092.final.mjs",
-        "react-dom.88714d9f.final.mjs",
-        "@esmx/router-react.6232c452.final.mjs",
-        "react.6bc70972.final.mjs"
+        "src/entry.client.c75784ca.final.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@../../node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/client.js": {
-            "name": "esmx-ai-demo@../../node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/client.js",
-            "js": "react-dom/client.8a285092.final.mjs",
-            "css": [],
-            "resources": []
-        },
-        "esmx-ai-demo@../../node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/index.js": {
-            "name": "esmx-ai-demo@../../node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/index.js",
-            "js": "react-dom.88714d9f.final.mjs",
-            "css": [],
-            "resources": []
-        },
-        "esmx-ai-demo@../../node_modules/.pnpm/@esmx+router-react@3.0.0-rc.112_react@19.2.4/node_modules/@esmx/router-react/dist/index.mjs": {
-            "name": "esmx-ai-demo@../../node_modules/.pnpm/@esmx+router-react@3.0.0-rc.112_react@19.2.4/node_modules/@esmx/router-react/dist/index.mjs",
-            "js": "@esmx/router-react.6232c452.final.mjs",
-            "css": [],
-            "resources": []
-        },
-        "esmx-ai-demo@src/routes.tsx": {
-            "name": "esmx-ai-demo@src/routes.tsx",
-            "js": "src/routes.a852e727.final.mjs",
-            "css": [],
-            "resources": []
-        },
-        "esmx-ai-demo@../../node_modules/.pnpm/react@19.2.4/node_modules/react/index.js": {
-            "name": "esmx-ai-demo@../../node_modules/.pnpm/react@19.2.4/node_modules/react/index.js",
-            "js": "react.6bc70972.final.mjs",
+        "esmx-ai-demo@src/entry.client.tsx": {
+            "name": "esmx-ai-demo@src/entry.client.tsx",
+            "js": "src/entry.client.c75784ca.final.mjs",
             "css": [],
             "resources": []
         }
