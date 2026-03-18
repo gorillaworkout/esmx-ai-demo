@@ -1,21 +1,21 @@
 {
-    "name": "esmx-ai-demo",
+    "name": "vue3-app",
     "exports": {
         "src/entry.node": {
             "name": "src/entry.node",
             "pkg": false,
             "file": "src/entry.node.mjs",
-            "identifier": "esmx-ai-demo/src/entry.node"
+            "identifier": "vue3-app/src/entry.node"
         }
     },
     "scopes": {},
     "files": [
-        "chunks/218.0cf8e48e.final.mjs",
+        "chunks/419.8aab3412.final.mjs",
         "src/entry.node.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@src/entry.node.ts": {
-            "name": "esmx-ai-demo@src/entry.node.ts",
+        "vue3-app@src/entry.node.ts": {
+            "name": "vue3-app@src/entry.node.ts",
             "js": "src/entry.node.mjs",
             "css": [],
             "resources": []

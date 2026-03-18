@@ -1,0 +1,25 @@
+{
+    "name": "vue3-app",
+    "exports": {
+        "src/entry.server": {
+            "name": "src/entry.server",
+            "pkg": false,
+            "file": "src/entry.server.7dbd98a3.final.mjs",
+            "identifier": "vue3-app/src/entry.server"
+        }
+    },
+    "scopes": {
+        "": {}
+    },
+    "files": [
+        "src/entry.server.7dbd98a3.final.mjs"
+    ],
+    "chunks": {
+        "vue3-app@src/entry.server.ts": {
+            "name": "vue3-app@src/entry.server.ts",
+            "js": "src/entry.server.7dbd98a3.final.mjs",
+            "css": [],
+            "resources": []
+        }
+    }
+}

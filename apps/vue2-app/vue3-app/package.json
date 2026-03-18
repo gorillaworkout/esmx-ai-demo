@@ -1,0 +1,16 @@
+{
+  "name": "vue3-app",
+  "type": "module",
+  "scripts": { "dev": "esmx dev", "build": "esmx build", "start": "esmx start" },
+  "dependencies": {
+    "@esmx/core": "^3.0.0-rc.112",
+    "@esmx/router": "^3.0.0-rc.112",
+    "@esmx/router-vue": "^3.0.0-rc.112",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@esmx/rspack": "^3.0.0-rc.112",
+    "@esmx/rspack-vue": "^3.0.0-rc.112",
+    "typescript": "^5.0.0"
+  }
+}
