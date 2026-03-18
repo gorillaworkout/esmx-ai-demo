@@ -1,4 +1,4 @@
-import React from 'react';
+import type { RouteConfig } from '@esmx/router';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -14,27 +14,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const Home = () => (
-  <Layout>
-    <h1>Welcome to ESMX React</h1>
-    <p>This is a microfrontend application powered by ESMX and React.</p>
-  </Layout>
-);
+const Home = () => <h1>Welcome to ESMX React</h1>;
+const About = () => <h1>About Page: Built by AI using the Docs</h1>;
+const NotFound = () => <h1>404 - Page Not Found</h1>;
 
-const About = () => (
-  <Layout>
-    <h1>About ESMX</h1>
-    <p>ESMX is a high-performance microfrontend framework supporting modern web technologies.</p>
-  </Layout>
-);
-
-export const routes = [
+export const routes: RouteConfig[] = [
   {
     path: '/',
-    component: Home
-  },
-  {
-    path: '/about',
-    component: About
+    component: Layout,
+    children: [
+      { path: '', component: Home },
+      { path: 'about', component: About },
+      { path: '(.*)', component: NotFound }
+    ]
   }
 ];
