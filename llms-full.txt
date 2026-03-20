@@ -10175,311 +10175,146 @@ export default async function render(rc: RenderContext) {
 ```
 
 
-## Setup with React (Modern @esmx/router-react)
+---
+url: /guide/ai-master-guide.md
+---
+# 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-> **CRITICAL UPDATE FOR AI DEVELOPERS**: Older documentation may claim React requires manual micro-app registration. This is **FALSE**. Esmx provides native, first-class React support via `@esmx/router-react` and `@esmx/rspack-react`. Follow the strict standalone guide below.
+> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has several undocumented behaviors, CJS/ESM interop quirks in Node.js, and strict architectural rules for Micro-Frontends. Failure to follow these rules will result in `SyntaxError`, `500 Internal Server Error`, or `EADDRINUSE`.
 
-To build a standalone Esmx application using React SSR, you must properly configure your dependencies, Rspack alias (to prevent duplicate React hooks), and the router contexts.
+## 1. Architecture Limitations (DO NOT MIX REACT & VUE)
+ESMX's Module Linking is designed for **same-ecosystem sharing**.
+- **Host App (Hub)**: Use a Vue 3 Host to orchestrate Vue 3 and Vue 2 remote apps.
+- **React Apps**: Must be generated as **100% standalone applications** running on their own ports. DO NOT attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader will crash due to CJS/ESM interop issues (`SyntaxError: The requested module 'react' does not provide an export named 'useSyncExternalStore'`).
 
-### 1. NPM Dependencies & Scripts
-You must install the framework from the public npm registry and use the `esmx` binary natively. Do not use local links or `node cli/index.mjs`.
+## 2. The Node.js CJS/ESM Interop Crash (CRITICAL)
+When running `esmx dev`, Node.js uses its native ESM loader. If you use named imports from CommonJS packages (like `react`, `react-dom/server`, or `@vue/server-renderer`), the dev server will crash.
 
-```json title="package.json"
-{
-  "scripts": {
-    "dev": "esmx dev",
-    "build": "esmx build",
-    "start": "esmx start"
-  },
-  "dependencies": {
-    "@esmx/core": "^3.0.0-rc.112",
-    "@esmx/router": "^3.0.0-rc.112",
-    "@esmx/router-react": "^3.0.0-rc.112",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
-  },
-  "devDependencies": {
-    "@esmx/rspack": "^3.0.0-rc.112",
-    "@esmx/rspack-react": "^3.0.0-rc.112"
-  }
-}
-```
-
-### 2. Rspack Alias Configuration (Fixing Invalid Hook Calls)
-When bundling a standalone React SSR app, package managers can resolve multiple instances of React between the workspace and `@esmx/*` internals, causing a 500 error ("Invalid hook call"). You MUST force Rspack to resolve a single instance of React:
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-
-export default {
-  async devApp(esmx) {
-    return import('@esmx/rspack-react').then(m =>
-      m.createRspackReactApp(esmx, {
-        chain({ chain }) {
-          // CRITICAL FOR STANDALONE SSR: Force single React instance
-          chain.resolve.alias
-            .set('react', require.resolve('react'))
-            .set('react-dom/server', require.resolve('react-dom/server'))
-            .set('react-dom/client', require.resolve('react-dom/client'))
-            .set('react-dom', require.resolve('react-dom'));
-        }
-      })
-    );
-  }
-} satisfies EsmxOptions;
-```
-
-### 3. Defining Routes (Always Include Catch-All)
-You must include a `(.*)` catch-all route to prevent the router from throwing "No active route found" errors when the browser requests unknown paths like `/favicon.ico` during SSR.
-
-```tsx title="src/routes.tsx"
-import type { RouteConfig } from '@esmx/router';
-
-const Layout = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
-const Home = () => <h1>Welcome to ESMX React</h1>;
-const NotFound = () => <h1>404 - Page Not Found</h1>;
-
-export const routes: RouteConfig[] = [
-  {
-    path: '/',
-    component: Layout,
-    children: [
-      { path: '', component: Home },
-      { path: '(.*)', component: NotFound }
-    ]
-  }
-];
-```
-
-### 4. Client Entry
-Use `<RouterProvider>` and `<RouterView>` to hydrate the application on the client.
-
-```tsx title="src/entry.client.tsx"
-import { createRoot } from 'react-dom/client';
-import { Router, RouterMode } from '@esmx/router';
-import { RouterProvider, RouterView } from '@esmx/router-react';
-import { routes } from './routes';
-
-const router = new Router({
-  root: '#app',
-  mode: RouterMode.history,
-  routes
-});
-
-router.push(window.location.pathname).then(() => {
-  const root = createRoot(document.getElementById('app')!);
-  root.render(
-    <RouterProvider router={router}>
-      <RouterView />
-    </RouterProvider>
-  );
-});
-```
-
-### 5. Server Entry (SSR)
-Render the React component tree to string and inject it into the `RenderContext`. Ensure you await `rc.commit()` before constructing the final HTML shell.
-
-```tsx title="src/entry.server.tsx"
+❌ **BAD (Will crash `esmx dev`):**
+```ts
+import { renderToString } from '@vue/server-renderer';
 import { renderToString } from 'react-dom/server';
-import { Router, RouterMode } from '@esmx/router';
-import { RouterProvider, RouterView } from '@esmx/router-react';
-import type { RenderContext } from '@esmx/core';
-import { routes } from './routes';
-
-export default async function render(rc: RenderContext) {
-  const router = new Router({
-    mode: RouterMode.memory,
-    base: new URL(rc.params.url || '/', 'http://localhost'),
-    routes
-  });
-
-  await router.push(rc.params.url || '/');
-
-  const appHtml = renderToString(
-    <RouterProvider router={router}>
-      <RouterView />
-    </RouterProvider>
-  );
-
-  await rc.commit();
-  
-  rc.html = `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <title>ESMX React SSR App</title>
-        ${rc.preload()}
-        ${rc.css()}
-      </head>
-      <body>
-        <div id="app">${appHtml}</div>
-        ${rc.importmap()}
-        ${rc.moduleEntry()}
-        ${rc.modulePreload()}
-      </body>
-    </html>
-  `;
-}
 ```
 
-### 🚨 CRITICAL ARCHITECTURE WARNING: React in Micro-Frontends (SSR)
-
-ESMX's Module Linking is designed for **same-ecosystem sharing** (e.g., Vue 3 Host orchestrating Vue 2 and Vue 3 remotes). 
-
-**DO NOT ATTEMPT TO MIX REACT AND VUE IN A SINGLE HOST APP WITH SSR.**
-If you attempt to import a bundled React remote into a Host App on the server (Node.js), you will encounter the following fatal error:
-`SyntaxError: The requested module 'react' does not provide an export named 'useSyncExternalStore'`
-
-**Why?**
-Node.js native ESM loader cannot destructure named exports from CJS modules (like React 19) when they are imported via bare specifiers inside pre-bundled remote chunks.
-
-**The Solution:**
-1. Keep the Host App restricted to Vue 2 and Vue 3 (matching the official ESMX `ssr-hub` example).
-2. If you need a React application, build and run it as a **100% standalone application** on a separate port (e.g., 3007), and link to it via standard HTML `<a>` tags or Nginx reverse proxy.
-
-
-
-### 🚨 CRITICAL ESM/CJS INTEROP IN NODE.JS DEV MODE
-
-When running `esmx dev`, Node.js uses its native ESM loader which throws `SyntaxError: The requested module ... does not provide an export named ...` when you try to named-import from CJS modules (like `@vue/server-renderer` or `react-dom/server`).
-
-**Rule for all `entry.server.ts` files:**
-Never use named imports from CJS modules directly. Use default imports and unwrap them to prevent the dev server from crashing.
-
-❌ **BAD:**
+✅ **GOOD (Safe Interop Wrapper):**
 ```ts
-import { renderToString } from '@vue/server-renderer'; // CRASHES esmx dev
-```
-
-✅ **GOOD:**
-```ts
+// For Vue 3
 import _vueServerRenderer from '@vue/server-renderer';
 const renderToString = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
+
+// For React
+import _reactDomServer from 'react-dom/server';
+const renderToString = _reactDomServer.renderToString || _reactDomServer.default?.renderToString || _reactDomServer;
 ```
 
+## 3. Remote App Structure (Micro-Frontend Children)
+Remote apps MUST export their router, app-creator, and a server-only renderer. Do NOT let the Host App call `createMicroApp()` directly from `@esmx/router-vue`.
 
-## Micro-Frontend Host Setup (Multi-Framework Orchestration)
-
-If you are building a Micro-Frontend that combines multiple apps (e.g., React, Vue 3, Vue 2) into a single URL space, you need a **Host App**. The host app coordinates routing and shares dependencies.
-
-### 1. Host `entry.node.ts` (Linking and Dependency Sharing)
-The host must define `links` to the remote apps' `dist` folders, `imports` to share dependencies and routes, and `scopes` to isolate conflicting versions (e.g., Vue 2 vs Vue 3).
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-import http from 'http';
-
+**`src/entry.node.ts` (Remote App):**
+```ts
 export default {
   modules: {
-    links: {
-      'react-app': '../react-app/dist',
-      'vue3-app': '../vue3-app/dist',
-      'vue2-app': '../vue2-app/dist'
+    lib: true,
+    exports: [
+      'root:src/routes.ts',
+      'root:src/app-creator.ts',
+      { 'src/render-to-str': { client: false, server: './src/render-to-str.ts' } }, // SERVER ONLY!
+      'pkg:vue',
+      'pkg:@esmx/router-vue'
+    ]
+  }
+}
+```
+
+**`src/app-creator.ts` (Remote App):**
+```ts
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
+import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
+import { createSSRApp, h } from 'vue';
+
+export const appCreator = (router: Router, { renderToString }: any = {}): RouterMicroAppOptions => {
+  const app = createSSRApp({
+    setup() { useProvideRouter(router); },
+    render: () => h(RouterView)
+  });
+  app.use(RouterPlugin);
+  return {
+    mount(root: HTMLElement) { 
+        app.mount(root);
     },
-    imports: {
-      // Import routes from remotes
-      'react-app-routes': 'react-app/src/routes.tsx',
-      'vue3-app-routes': 'vue3-app/src/routes.ts',
-      'vue2-app-routes': 'vue2-app/src/routes.ts',
-      
-      // Share libraries to avoid downloading them multiple times
-      'react': 'react-app/react',
-      'react-dom': 'react-app/react-dom',
-      'react-dom/client': 'react-app/react-dom/client',
-      'react-dom/server': 'react-app/react-dom/server',
-      'vue': 'vue3-app/vue', // Default Vue is Vue 3
-      '@esmx/router-react': 'react-app/@esmx/router-react',
-      '@esmx/router-vue': 'vue3-app/@esmx/router-vue'
-    },
-    scopes: {
-      // Isolate Vue 2 into its own scope so it doesn't conflict with Vue 3
-      'vue2-app/': {
-        'vue': 'vue2-app/vue',
-        'vue-server-renderer': 'vue2-app/vue-server-renderer',
-        '@esmx/router-vue': 'vue2-app/@esmx/router-vue'
-      }
+    unmount() { app.unmount(); },
+    async renderToString() {
+      if (typeof renderToString !== 'function') return '';
+      return renderToString(app);
     }
-  },
-  async devApp(esmx) {
-    return import('@esmx/rspack').then(m => m.createRspackHtmlApp(esmx));
-  },
-  async server(esmx) {
-    const server = http.createServer((req, res) => {
-      esmx.middleware(req, res, async () => {
-        const rc = await esmx.render({ params: { url: req.url } });
-        res.setHeader('Content-Type', 'text/html');
-        res.end(rc.html);
-      });
-    });
-    server.listen(3000);
-  }
-} satisfies EsmxOptions;
+  };
+};
 ```
 
-### 2. Host `src/routes.ts`
-Map URL paths to the remote apps.
+**`src/render-to-str.ts` (Remote App - Server Only):**
+```ts
+import _vueServerRenderer from '@vue/server-renderer';
+const renderer = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
 
-```ts title="src/routes.ts"
-export const routes = [
-  {
-    path: '/',
-    component: { template: '<h1>Micro-Frontend Host</h1>' }
-  },
-  {
-    path: '/react',
-    app: 'react-app',
-    asyncComponent: () => import('react-app-routes') // The exported routes from React App
-  },
-  {
-    path: '/vue3',
-    app: 'vue3-app',
-    asyncComponent: () => import('vue3-app-routes')
-  }
-];
+export async function renderToString(app: any): Promise<string> {
+  const html = await renderer(app);
+  return `<div id="root"><div data-server-rendered>${html}</div></div>`;
+}
 ```
 
-### 3. Host `entry.server.ts` & `entry.client.ts`
-You must register the framework-specific `createMicroApp()` handlers so the Router knows how to mount/unmount the different frameworks.
+## 4. Host App Setup
+The Host App imports the `app-creator` and `render-to-str` from the remotes.
 
-```ts title="src/entry.server.ts"
+**`src/entry.server.ts` (Host App):**
+```ts
 import { Router, RouterMode } from '@esmx/router';
-import { routes } from './routes.ts';
+import { routes } from './routes';
 
 export default async function render(rc) {
+  // Dynamic imports from remotes
+  const vue3Render = await import('vue3-app-render');
+  const vue3Creator = await import('vue3-app-creator');
+
   const router = new Router({
     mode: RouterMode.memory,
     base: new URL(rc.params.url || '/', 'http://localhost'),
     routes,
     apps: {
-      'react-app': () => import('@esmx/router-react').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))()),
-      'vue3-app': () => import('@esmx/router-vue').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))()),
-      'vue2-app': () => import('@esmx/router-vue').then(m => (m.createMicroApp || (m.default && m.default.createMicroApp))())
+      'vue3-app': () => vue3Creator.appCreator(router, { renderToString: vue3Render.renderToString })
     }
   });
-
   await router.push(rc.params.url || '/');
   const html = await router.renderToString(rc);
-  
   await rc.commit();
-  rc.html = `
-    <!DOCTYPE html>
-    <html>
-      <head>${rc.preload()}${rc.css()}</head>
-      <body>
-        <div id="app">${html}</div>
-        ${rc.importmap()}
-        ${rc.moduleEntry()}
-        ${rc.modulePreload()}
-      </body>
-    </html>
-  `;
+  rc.html = `...inject html...`;
 }
 ```
 
-> **CRITICAL CJS/ESM INTEROP NOTE:** Depending on the package manager and bundler output format, dynamic imports of router packages within a Host App might place the exported functions inside a `.default` object. Always extract `createMicroApp` safely using `(m.createMicroApp || m.default.createMicroApp)()` as shown above.
+## 5. Vue 2 Specific Requirements
+If generating a Vue 2 remote:
+1. **Dependencies:** `vue@2.7.16`, `vue-server-renderer@2.7.16`, `vue-template-compiler@2.7.16`.
+2. **Rspack Alias:** You MUST add this to `entry.node.ts` `devApp` chain to prevent module resolution errors:
+   `chain.resolve.alias.set('vue$', require.resolve('vue/dist/vue.runtime.esm.js'));`
+3. **App Creation:** Use `new Vue({ router, template: '<router-view></router-view>' })` instead of `createApp()`.
+4. **Renderer:** Use `import { createRenderer } from 'vue-server-renderer'`.
 
-*Note: For `entry.client.ts`, the setup is identical (using the same safe import logic), but uses `RouterMode.history` and hydrates the root element.*
+## 6. React Standalone Setup
+React SSR MUST fix duplicate hook errors by aliasing in `entry.node.ts`:
+```ts
+chain.resolve.alias
+  .set('react', require.resolve('react'))
+  .set('react-dom/server', require.resolve('react-dom/server'))
+  .set('react-dom/client', require.resolve('react-dom/client'))
+  .set('react-dom', require.resolve('react-dom'));
+```
+Always include a catch-all route `{ path: '(.*)', component: NotFound }` in React to prevent 500 errors on `/favicon.ico` SSR requests.
+
+## 7. Package.json Scripts
+Always use the native binary for scripts. Do not use local links like `node cli/index.mjs`.
+```json
+"scripts": {
+  "dev": "esmx dev",
+  "build": "esmx build",
+  "start": "esmx start"
+}
+```
