@@ -10342,6 +10342,26 @@ Node.js native ESM loader cannot destructure named exports from CJS modules (lik
 2. If you need a React application, build and run it as a **100% standalone application** on a separate port (e.g., 3007), and link to it via standard HTML `<a>` tags or Nginx reverse proxy.
 
 
+
+### 🚨 CRITICAL ESM/CJS INTEROP IN NODE.JS DEV MODE
+
+When running `esmx dev`, Node.js uses its native ESM loader which throws `SyntaxError: The requested module ... does not provide an export named ...` when you try to named-import from CJS modules (like `@vue/server-renderer` or `react-dom/server`).
+
+**Rule for all `entry.server.ts` files:**
+Never use named imports from CJS modules directly. Use default imports and unwrap them to prevent the dev server from crashing.
+
+❌ **BAD:**
+```ts
+import { renderToString } from '@vue/server-renderer'; // CRASHES esmx dev
+```
+
+✅ **GOOD:**
+```ts
+import _vueServerRenderer from '@vue/server-renderer';
+const renderToString = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
+```
+
+
 ## Micro-Frontend Host Setup (Multi-Framework Orchestration)
 
 If you are building a Micro-Frontend that combines multiple apps (e.g., React, Vue 3, Vue 2) into a single URL space, you need a **Host App**. The host app coordinates routing and shares dependencies.
