@@ -10178,27 +10178,20 @@ export default async function render(rc: RenderContext) {
 ---
 url: /guide/ai-master-guide.md
 ---
+
+---
+url: /guide/ai-master-guide.md
+---
 # 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has several undocumented behaviors, CJS/ESM interop quirks in Node.js, and strict architectural rules for Micro-Frontends. Failure to follow these rules will result in `SyntaxError`, `500 Internal Server Error`, or `EADDRINUSE`.
+> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has several undocumented behaviors and strict architectural rules for Micro-Frontends.
 
 ## 1. Architecture Limitations (DO NOT MIX REACT & VUE)
 ESMX's Module Linking is designed for **same-ecosystem sharing**.
 - **Host App (Hub)**: Use a Vue 3 Host to orchestrate Vue 3 and Vue 2 remote apps.
-- **React Apps**: Must be generated as **100% standalone applications** running on their own ports. DO NOT attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader will crash due to CJS/ESM interop issues (`SyntaxError: The requested module 'react' does not provide an export named 'useSyncExternalStore'`).
+- **React Apps**: Must be generated as **100% standalone applications** running on their own ports. DO NOT attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader will crash due to CJS/ESM interop issues.
 
-## 2. The Node.js CJS/ESM Interop Crash (CRITICAL)
-When using Module Linking, ESMX compiles remote applications into individual ESM chunks. Node.js's native ESM loader cannot extract named exports from underlying CJS packages (like `@vue/server-renderer` or `react`) during the dynamic graph evaluation of `esmx dev`.
-
-**THE RULE FOR HOST APPS:**
-Do not use `esmx dev` when orchestrating pre-built Micro-Frontends. The development server VM loader will crash with `SyntaxError: The requested module ... does not provide an export named ...`.
-
-Instead, you MUST use the build pipeline to test Host Apps locally:
-```bash
-npm run build && npm run start
-```
-*(This only applies to the Host app; standalone remote apps can still use `esmx dev` safely).*
-## 3. Remote App Structure (Micro-Frontend Children)
+## 2. Remote App Structure (Micro-Frontend Children)
 Remote apps MUST export their router, app-creator, and a server-only renderer. Do NOT let the Host App call `createMicroApp()` directly from `@esmx/router-vue`.
 
 **`src/entry.node.ts` (Remote App):**
@@ -10244,8 +10237,7 @@ export const appCreator = (router: Router, { renderToString }: any = {}): Router
 
 **`src/render-to-str.ts` (Remote App - Server Only):**
 ```ts
-import _vueServerRenderer from '@vue/server-renderer';
-const renderer = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
+import { renderToString as renderer } from '@vue/server-renderer';
 
 export async function renderToString(app: any): Promise<string> {
   const html = await renderer(app);
@@ -10253,7 +10245,7 @@ export async function renderToString(app: any): Promise<string> {
 }
 ```
 
-## 4. Host App Setup
+## 3. Host App Setup
 The Host App imports the `app-creator` and `render-to-str` from the remotes.
 
 **`src/entry.server.ts` (Host App):**
@@ -10281,7 +10273,7 @@ export default async function render(rc) {
 }
 ```
 
-## 5. Vue 2 Specific Requirements
+## 4. Vue 2 Specific Requirements
 If generating a Vue 2 remote:
 1. **Dependencies:** `vue@2.7.16`, `vue-server-renderer@2.7.16`, `vue-template-compiler@2.7.16`.
 2. **Rspack Alias:** You MUST add this to `entry.node.ts` `devApp` chain to prevent module resolution errors:
@@ -10289,7 +10281,7 @@ If generating a Vue 2 remote:
 3. **App Creation:** Use `new Vue({ router, template: '<router-view></router-view>' })` instead of `createApp()`.
 4. **Renderer:** Use `import { createRenderer } from 'vue-server-renderer'`.
 
-## 6. React Standalone Setup
+## 5. React Standalone Setup
 React SSR MUST fix duplicate hook errors by aliasing in `entry.node.ts`:
 ```ts
 chain.resolve.alias
@@ -10300,12 +10292,12 @@ chain.resolve.alias
 ```
 Always include a catch-all route `{ path: '(.*)', component: NotFound }` in React to prevent 500 errors on `/favicon.ico` SSR requests.
 
-## 7. Package.json Scripts
-Always use the native binary for scripts. Do not use local links like `node cli/index.mjs`.
-```json
-"scripts": {
-  "dev": "esmx dev",
-  "build": "esmx build",
-  "start": "esmx start"
-}
+## 6. Production Mode Requirement
+**THE RULE FOR HOST APPS:**
+Do not use `esmx dev` when orchestrating pre-built Micro-Frontends. Node.js's native ESM loader cannot extract named exports from underlying CJS packages (like `@vue/server-renderer` or `react`) during the dynamic graph evaluation of `esmx dev`, leading to `SyntaxError: The requested module ... does not provide an export named ...`
+
+Instead, you MUST use the build pipeline to test Host Apps locally:
+```bash
+npm run build && npm run start
 ```
+*(This only applies to the Host app; standalone remote apps can still use `esmx dev` safely).*
