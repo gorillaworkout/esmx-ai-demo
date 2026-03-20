@@ -10188,25 +10188,16 @@ ESMX's Module Linking is designed for **same-ecosystem sharing**.
 - **React Apps**: Must be generated as **100% standalone applications** running on their own ports. DO NOT attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader will crash due to CJS/ESM interop issues (`SyntaxError: The requested module 'react' does not provide an export named 'useSyncExternalStore'`).
 
 ## 2. The Node.js CJS/ESM Interop Crash (CRITICAL)
-When running `esmx dev`, Node.js uses its native ESM loader. If you use named imports from CommonJS packages (like `react`, `react-dom/server`, or `@vue/server-renderer`), the dev server will crash.
+When using Module Linking, ESMX compiles remote applications into individual ESM chunks. Node.js's native ESM loader cannot extract named exports from underlying CJS packages (like `@vue/server-renderer` or `react`) during the dynamic graph evaluation of `esmx dev`.
 
-❌ **BAD (Will crash `esmx dev`):**
-```ts
-import { renderToString } from '@vue/server-renderer';
-import { renderToString } from 'react-dom/server';
+**THE RULE FOR HOST APPS:**
+Do not use `esmx dev` when orchestrating pre-built Micro-Frontends. The development server VM loader will crash with `SyntaxError: The requested module ... does not provide an export named ...`.
+
+Instead, you MUST use the build pipeline to test Host Apps locally:
+```bash
+npm run build && npm run start
 ```
-
-✅ **GOOD (Safe Interop Wrapper):**
-```ts
-// For Vue 3
-import _vueServerRenderer from '@vue/server-renderer';
-const renderToString = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
-
-// For React
-import _reactDomServer from 'react-dom/server';
-const renderToString = _reactDomServer.renderToString || _reactDomServer.default?.renderToString || _reactDomServer;
-```
-
+*(This only applies to the Host app; standalone remote apps can still use `esmx dev` safely).*
 ## 3. Remote App Structure (Micro-Frontend Children)
 Remote apps MUST export their router, app-creator, and a server-only renderer. Do NOT let the Host App call `createMicroApp()` directly from `@esmx/router-vue`.
 
