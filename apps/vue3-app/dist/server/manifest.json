@@ -4,7 +4,7 @@
         "src/routes": {
             "name": "src/routes",
             "pkg": false,
-            "file": "src/routes.4d9243bd.final.mjs",
+            "file": "src/routes.2a0e2f99.final.mjs",
             "identifier": "vue3-app/src/routes"
         },
         "src/app-creator": {
@@ -16,7 +16,7 @@
         "src/render-to-str": {
             "name": "src/render-to-str",
             "pkg": false,
-            "file": "src/render-to-str.9c0a8f56.final.mjs",
+            "file": "src/render-to-str.60b0b325.final.mjs",
             "identifier": "vue3-app/src/render-to-str"
         },
         "vue": {
@@ -24,12 +24,6 @@
             "pkg": true,
             "file": "vue.849a697b.final.mjs",
             "identifier": "vue3-app/vue"
-        },
-        "@vue/server-renderer": {
-            "name": "@vue/server-renderer",
-            "pkg": true,
-            "file": "@vue/server-renderer.b58c8b19.final.mjs",
-            "identifier": "vue3-app/@vue/server-renderer"
         },
         "@esmx/router-vue": {
             "name": "@esmx/router-vue",
@@ -41,17 +35,15 @@
     "scopes": {
         "": {
             "vue": "vue3-app/vue",
-            "@vue/server-renderer": "vue3-app/@vue/server-renderer",
             "@esmx/router-vue": "vue3-app/@esmx/router-vue"
         }
     },
     "files": [
-        "src/routes.4d9243bd.final.mjs",
+        "src/routes.2a0e2f99.final.mjs",
         "src/app-creator.464529a9.final.mjs",
         "vue.849a697b.final.mjs",
         "@esmx/router-vue.3452a9a7.final.mjs",
-        "@vue/server-renderer.b58c8b19.final.mjs",
-        "src/render-to-str.9c0a8f56.final.mjs"
+        "src/render-to-str.60b0b325.final.mjs"
     ],
     "chunks": {
         "vue3-app@../../node_modules/.pnpm/vue@3.5.30_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-browser.prod.js": {
@@ -68,13 +60,7 @@
         },
         "vue3-app@src/routes.ts": {
             "name": "vue3-app@src/routes.ts",
-            "js": "src/routes.4d9243bd.final.mjs",
-            "css": [],
-            "resources": []
-        },
-        "vue3-app@../../node_modules/.pnpm/@vue+server-renderer@3.5.30_vue@3.5.30_typescript@5.9.3_/node_modules/@vue/server-renderer/dist/server-renderer.cjs.prod.js": {
-            "name": "vue3-app@../../node_modules/.pnpm/@vue+server-renderer@3.5.30_vue@3.5.30_typescript@5.9.3_/node_modules/@vue/server-renderer/dist/server-renderer.cjs.prod.js",
-            "js": "@vue/server-renderer.b58c8b19.final.mjs",
+            "js": "src/routes.2a0e2f99.final.mjs",
             "css": [],
             "resources": []
         },
@@ -86,7 +72,7 @@
         },
         "vue3-app@src/render-to-str.ts": {
             "name": "vue3-app@src/render-to-str.ts",
-            "js": "src/render-to-str.9c0a8f56.final.mjs",
+            "js": "src/render-to-str.60b0b325.final.mjs",
             "css": [],
             "resources": []
         }

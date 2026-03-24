@@ -1,11 +1,11 @@
 {
-    "name": "esmx-ai-demo",
+    "name": "react-app",
     "exports": {
         "src/entry.node": {
             "name": "src/entry.node",
             "pkg": false,
             "file": "src/entry.node.mjs",
-            "identifier": "esmx-ai-demo/src/entry.node"
+            "identifier": "react-app/src/entry.node"
         }
     },
     "scopes": {},
@@ -14,8 +14,8 @@
         "src/entry.node.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@src/entry.node.ts": {
-            "name": "esmx-ai-demo@src/entry.node.ts",
+        "react-app@src/entry.node.ts": {
+            "name": "react-app@src/entry.node.ts",
             "js": "src/entry.node.mjs",
             "css": [],
             "resources": []

@@ -1,5 +1,6 @@
 import { Router, RouterMode } from '@esmx/router';
-import { renderToString } from 'react-dom/server';
+import _reactDomServer from 'react-dom/server';
+const renderToString = _reactDomServer.renderToString || _reactDomServer.default?.renderToString || _reactDomServer;
 import { RouterProvider, RouterView } from '@esmx/router-react';
 import { routes } from './routes';
 import type { RenderContext } from '@esmx/core';

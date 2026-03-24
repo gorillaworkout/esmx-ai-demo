@@ -21,8 +21,8 @@
     },
     "exports": {
         "./src/routes": {
-            "default": "./server/src/routes.4d9243bd.final.mjs",
-            "browser": "./client/src/routes.565b2f6c.final.mjs"
+            "default": "./server/src/routes.2a0e2f99.final.mjs",
+            "browser": "./client/src/routes.74a955ce.final.mjs"
         },
         "./src/app-creator": {
             "default": "./server/src/app-creator.464529a9.final.mjs",
@@ -32,14 +32,10 @@
             "default": "./server/vue.849a697b.final.mjs",
             "browser": "./client/vue.eedf49f5.final.mjs"
         },
-        "./@vue/server-renderer": {
-            "default": "./server/@vue/server-renderer.b58c8b19.final.mjs",
-            "browser": "./client/@vue/server-renderer.84c157c0.final.mjs"
-        },
         "./@esmx/router-vue": {
             "default": "./server/@esmx/router-vue.3452a9a7.final.mjs",
             "browser": "./client/@esmx/router-vue.d32c91d0.final.mjs"
         },
-        "./src/render-to-str": "./server/src/render-to-str.9c0a8f56.final.mjs"
+        "./src/render-to-str": "./server/src/render-to-str.60b0b325.final.mjs"
     }
 }

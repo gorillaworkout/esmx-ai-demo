@@ -1,23 +1,23 @@
 {
-    "name": "esmx-ai-demo",
+    "name": "react-app",
     "exports": {
         "src/entry.server": {
             "name": "src/entry.server",
             "pkg": false,
-            "file": "src/entry.server.e0f9387a.final.mjs",
-            "identifier": "esmx-ai-demo/src/entry.server"
+            "file": "src/entry.server.bd3ba614.final.mjs",
+            "identifier": "react-app/src/entry.server"
         }
     },
     "scopes": {
         "": {}
     },
     "files": [
-        "src/entry.server.e0f9387a.final.mjs"
+        "src/entry.server.bd3ba614.final.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@src/entry.server.tsx": {
-            "name": "esmx-ai-demo@src/entry.server.tsx",
-            "js": "src/entry.server.e0f9387a.final.mjs",
+        "react-app@src/entry.server.tsx": {
+            "name": "react-app@src/entry.server.tsx",
+            "js": "src/entry.server.bd3ba614.final.mjs",
             "css": [],
             "resources": []
         }

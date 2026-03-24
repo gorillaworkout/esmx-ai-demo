@@ -13,7 +13,6 @@ export default {
         }
       },
       'pkg:vue',
-      'pkg:@vue/server-renderer',
       'pkg:@esmx/router-vue'
     ]
   },

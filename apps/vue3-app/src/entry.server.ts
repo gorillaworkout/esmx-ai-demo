@@ -1,5 +1,6 @@
 import { Router, RouterMode } from '@esmx/router';
-import { renderToString } from '@vue/server-renderer';
+import _vueServerRenderer from '@vue/server-renderer';
+const renderToString = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
 import { createVueApp } from './create-app';
 import { routes } from './routes';
 export default async function render(rc) {

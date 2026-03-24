@@ -4,7 +4,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
-            "file": "src/entry.client.16fb2827.final.mjs",
+            "file": "src/entry.client.1c2fc471.final.mjs",
             "identifier": "host-app/src/entry.client"
         }
     },
@@ -21,13 +21,12 @@
             "vue2-app-creator": "vue2-app/src/app-creator",
             "vue2-app-render": "vue2-app/src/render-to-str",
             "vue": "vue3-app/vue",
-            "@vue/server-renderer": "vue3-app/@vue/server-renderer",
             "@esmx/router-vue": "vue3-app/@esmx/router-vue"
         }
     },
     "files": [
-        "src/entry.client.16fb2827.final.mjs",
         "chunks/586.c2f14cc2.final.mjs",
+        "src/entry.client.1c2fc471.final.mjs",
         "chunks/626.061dfc96.final.mjs",
         "chunks/999.2256f927.final.mjs",
         "chunks/337.546316dc.final.mjs"
@@ -35,7 +34,7 @@
     "chunks": {
         "host-app@src/entry.client.ts": {
             "name": "host-app@src/entry.client.ts",
-            "js": "src/entry.client.16fb2827.final.mjs",
+            "js": "src/entry.client.1c2fc471.final.mjs",
             "css": [],
             "resources": []
         }

@@ -1,1 +1,0 @@
-import.meta.chunkName=import.meta.chunkName??"vue3-app@src/routes.ts";var e=[{path:"/",component:{template:"<h1>Vue 3 ESMX</h1>"}}];export{e as routes};

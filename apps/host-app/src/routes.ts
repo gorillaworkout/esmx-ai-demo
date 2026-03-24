@@ -1,22 +1,9 @@
-import { defineComponent, h } from 'vue';
-
-const Home = defineComponent({
-  name: 'Home',
-  render() {
-    return h('div', { style: 'padding: 2rem; font-family: sans-serif;' }, [
-      h('h1', '🚀 ESMX Vue Micro-Frontend Host'),
-      h('p', 'This host orchestrates Vue 3 and Vue 2 apps seamlessly:'),
-      h('ul', [
-        h('li', [h('a', { href: '/vue3' }, 'Vue 3 App (Integrated)')]),
-        h('li', [h('a', { href: '/vue2' }, 'Vue 2 App (Integrated)')]),
-        h('li', [h('a', { href: 'http://localhost:3007' }, 'React App (Standalone)')])
-      ])
-    ]);
-  }
-});
-
 export const routes = [
-  { path: '/', component: Home },
+  {
+    path: '/',
+    app: 'vanilla',
+    component: { template: '<div style="padding: 2rem; font-family: sans-serif;"><h1>🚀 ESMX Micro-Frontend Host</h1><p>Choose a framework:</p><ul><li><a href="/vue3">Vue 3 App</a></li><li><a href="/vue2">Vue 2 App</a></li><li><a href="http://localhost:3007">React App (standalone)</a></li></ul></div>' }
+  },
   {
     path: '/vue3(.*)',
     app: 'vue3-app',

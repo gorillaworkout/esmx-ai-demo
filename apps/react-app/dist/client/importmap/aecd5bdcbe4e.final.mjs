@@ -1,6 +1,6 @@
 (() => {
 const base = document.currentScript.getAttribute("data-base");
-const importmap = {"imports":{"esmx-ai-demo\u002Fsrc\u002Fentry.client":"\u002Fesmx-ai-demo\u002Fsrc\u002Fentry.client.c75784ca.final.mjs"}};
+const importmap = {"imports":{"react-app\u002Fsrc\u002Fentry.client":"\u002Freact-app\u002Fsrc\u002Fentry.client.c75784ca.final.mjs"}};
 const set = (data) => {
     if (!data) return;
     Object.entries(data).forEach(([k, v]) => {

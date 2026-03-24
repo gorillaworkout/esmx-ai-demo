@@ -1,11 +1,11 @@
 {
-    "name": "esmx-ai-demo",
+    "name": "react-app",
     "exports": {
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
             "file": "src/entry.client.c75784ca.final.mjs",
-            "identifier": "esmx-ai-demo/src/entry.client"
+            "identifier": "react-app/src/entry.client"
         }
     },
     "scopes": {
@@ -15,8 +15,8 @@
         "src/entry.client.c75784ca.final.mjs"
     ],
     "chunks": {
-        "esmx-ai-demo@src/entry.client.tsx": {
-            "name": "esmx-ai-demo@src/entry.client.tsx",
+        "react-app@src/entry.client.tsx": {
+            "name": "react-app@src/entry.client.tsx",
             "js": "src/entry.client.c75784ca.final.mjs",
             "css": [],
             "resources": []

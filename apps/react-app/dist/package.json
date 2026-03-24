@@ -1,5 +1,5 @@
 {
-    "name": "esmx-ai-demo",
+    "name": "react-app",
     "version": "1.0.0",
     "description": "Standalone React SSR Demo for ESMX",
     "type": "module",
@@ -24,6 +24,6 @@
     },
     "exports": {
         "./src/entry.client": "./client/src/entry.client.c75784ca.final.mjs",
-        "./src/entry.server": "./server/src/entry.server.e0f9387a.final.mjs"
+        "./src/entry.server": "./server/src/entry.server.bd3ba614.final.mjs"
     }
 }

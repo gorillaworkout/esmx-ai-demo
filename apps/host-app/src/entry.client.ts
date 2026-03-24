@@ -1,18 +1,18 @@
 import { Router, RouterMode } from '@esmx/router';
-import { createApp } from './create-app';
 import { routes } from './routes';
 
 const router = new Router({
-  root: '#app',
+  root: '#root',
   mode: RouterMode.history,
   routes,
   apps: {
-    'vue3-app': () => import('vue3-app-creator').then(m => m.appCreator(router)),
-    'vue2-app': () => import('vue2-app-creator').then(m => m.appCreator(router))
+    'vanilla': () => ({
+      mount(el, comp) { el.innerHTML = comp.template; return comp; },
+      unmount(el) { el.innerHTML = ''; }
+    }),
+    'vue3-app': (r) => import('vue3-app-creator').then(m => m.appCreator(r)),
+    'vue2-app': (r) => import('vue2-app-creator').then(m => m.appCreator(r))
   }
 });
 
-router.push(window.location.pathname).then(() => {
-  const { app } = createApp(router);
-  app.mount('#app');
-});
+router.push(window.location.pathname);

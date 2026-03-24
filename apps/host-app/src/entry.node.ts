@@ -17,7 +17,6 @@ export default {
       'vue2-app-render': 'vue2-app/src/render-to-str',
       
       'vue': 'vue3-app/vue',
-      '@vue/server-renderer': 'vue3-app/@vue/server-renderer',
       '@esmx/router-vue': 'vue3-app/@esmx/router-vue'
     },
     scopes: {
