@@ -10252,11 +10252,11 @@ The Host App imports the `app-creator` and `render-to-str` from the remotes.
 ```ts
 import { Router, RouterMode } from '@esmx/router';
 import { routes } from './routes';
+// Use static imports for SSR rendering functions to bypass Node's ESM/CJS interop crash
+import { renderToString as vue3Render } from 'vue3-app/src/render-to-str';
+import { appCreator as vue3Creator } from 'vue3-app/src/app-creator';
 
 export default async function render(rc) {
-  // Dynamic imports from remotes
-  const vue3Render = await import('vue3-app-render');
-  const vue3Creator = await import('vue3-app-creator');
 
   const router = new Router({
     mode: RouterMode.memory,
