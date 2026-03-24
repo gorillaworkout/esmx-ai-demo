@@ -1,0 +1,9 @@
+
+> host-app@ start /home/ubuntu/apps/ESMX-AI-DEMO/apps/host-app
+> esmx start
+
+🔥 Esmx v3.0.0-rc.112
+    
+HOST APP running on http://localhost:3004
+Killed
+ ELIFECYCLE  Command failed with exit code 137.

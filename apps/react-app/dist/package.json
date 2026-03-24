@@ -24,6 +24,6 @@
     },
     "exports": {
         "./src/entry.client": "./client/src/entry.client.c75784ca.final.mjs",
-        "./src/entry.server": "./server/src/entry.server.bd3ba614.final.mjs"
+        "./src/entry.server": "./server/src/entry.server.5f3f07d8.final.mjs"
     }
 }

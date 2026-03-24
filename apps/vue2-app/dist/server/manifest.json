@@ -41,9 +41,9 @@
     "files": [
         "vue.4bad944d.final.mjs",
         "src/routes.36125e86.final.mjs",
-        "@esmx/router-vue.3955d580.final.mjs",
         "src/app-creator.ee585225.final.mjs",
-        "src/render-to-str.976ea594.final.mjs"
+        "src/render-to-str.976ea594.final.mjs",
+        "@esmx/router-vue.3955d580.final.mjs"
     ],
     "chunks": {
         "vue2-app@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.runtime.esm.js": {
