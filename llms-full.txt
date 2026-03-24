@@ -10406,6 +10406,11 @@ url: /guide/ai-master-guide.md
 ---
 url: /guide/ai-master-guide.md
 ---
+
+
+---
+url: /guide/ai-master-guide.md
+---
 # 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
 > **ATTENTION AI ASSISTANTS:** Read this section carefully. ESMX 3.0 has specific architectural boundaries for Micro-Frontends (MFE). Node.js v22 ESM loaders strictly enforce CJS/ESM interop, which impacts how React and Vue are bundled and loaded on the server side.
