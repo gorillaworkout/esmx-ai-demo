@@ -10396,9 +10396,14 @@ router.push(window.location.pathname);
 ---
 url: /guide/ai-master-guide.md
 ---
+
+
+---
+url: /guide/ai-master-guide.md
+---
 # 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has strict architectural boundaries for Micro-Frontends (MFE). Failure to follow these rules will result in `SyntaxError`, `ReferenceError: Cannot access 'e' before initialization`, or 500 Internal Server Errors.
+> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has strict architectural boundaries for Micro-Frontends (MFE). Failure to follow these rules will result in `SyntaxError`, `ReferenceError`, or 500 Internal Server Errors.
 
 ## 1. The Golden Architecture Rule (Vue Hub + React Standalone)
 ESMX's Module Linking is designed for **same-ecosystem sharing**. You MUST use this architecture:
