@@ -10182,36 +10182,52 @@ url: /guide/ai-master-guide.md
 ---
 url: /guide/ai-master-guide.md
 ---
-# 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has several undocumented behaviors and strict architectural rules for Micro-Frontends.
 
-## 1. Architecture Limitations (DO NOT MIX REACT & VUE)
-ESMX's Module Linking is designed for **same-ecosystem sharing**.
-- **Host App (Hub)**: Use a Vue 3 Host to orchestrate Vue 3 and Vue 2 remote apps.
-- **React Apps**: Must be generated as **100% standalone applications** running on their own ports. DO NOT attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader will crash due to CJS/ESM interop issues.
+---
+url: /guide/micro-frontend-architecture.md
+---
+# Micro-Frontend (MFE) Architecture
 
-## 2. Remote App Structure (Micro-Frontend Children)
-Remote apps MUST export their router, app-creator, and a server-only renderer. Do NOT let the Host App call `createMicroApp()` directly from `@esmx/router-vue`.
+ESMX is built from the ground up to support Micro-Frontend (MFE) architectures using Module Linking. In an ESMX MFE setup, you typically have one **Host App (Hub)** that manages the routing, and multiple **Remote Apps** that act as UI libraries.
 
-**`src/entry.node.ts` (Remote App):**
-```ts
+## 1. Remote App Configuration (The Micro-Apps)
+Remote applications should not act as standalone servers in a production MFE environment. Instead, they must be compiled as libraries (`lib: true`) and export their routing and rendering logic.
+
+### 1.1 `src/entry.node.ts`
+The remote app must export its routes, an app creator, and a server-only renderer stringifier.
+
+```ts title="remote-app/src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 export default {
   modules: {
-    lib: true,
+    lib: true, // Crucial: Marks this app as a remote library
     exports: [
       'root:src/routes.ts',
       'root:src/app-creator.ts',
-      { 'src/render-to-str': { client: false, server: './src/render-to-str.ts' } }, // SERVER ONLY!
-      'pkg:vue',
-      'pkg:@esmx/router-vue'
+      // The render-to-str module is strictly for the server environment
+      { 'src/render-to-str': { client: false, server: './src/render-to-str.ts' } },
+      'pkg:vue', // or 'pkg:react', etc.
+      'pkg:@esmx/router-vue' // or 'pkg:@esmx/router-react'
     ]
+  },
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then(m => m.createRspackVue3App(esmx));
+    // For React, you MUST add alias to prevent duplicate hooks:
+    // chain.resolve.alias.set('react', require.resolve('react')).set('react-dom', require.resolve('react-dom'))
+    // For Vue 2, you MUST add alias to prevent missing module errors:
+    // chain.resolve.alias.set('vue$', require.resolve('vue/dist/vue.runtime.esm.js'))
   }
-}
+} satisfies EsmxOptions;
 ```
 
-**`src/app-creator.ts` (Remote App):**
-```ts
+### 1.2 `src/app-creator.ts`
+The `app-creator` acts as the bridge between the Host's router and the Remote's framework. It must return `mount`, `unmount`, and `renderToString`.
+
+```ts title="remote-app/src/app-creator.ts"
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
 import { createSSRApp, h } from 'vue';
@@ -10222,6 +10238,7 @@ export const appCreator = (router: Router, { renderToString }: any = {}): Router
     render: () => h(RouterView)
   });
   app.use(RouterPlugin);
+  
   return {
     mount(root: HTMLElement) { 
         app.mount(root);
@@ -10235,69 +10252,131 @@ export const appCreator = (router: Router, { renderToString }: any = {}): Router
 };
 ```
 
-**`src/render-to-str.ts` (Remote App - Server Only):**
-```ts
-import { renderToString as renderer } from '@vue/server-renderer';
+### 1.3 `src/render-to-str.ts` (Server Only)
+**Critical Note:** To avoid Node.js CJS/ESM interop `SyntaxError` during SSR, you MUST use Node's `require` to load the underlying framework renderer.
 
-export async function renderToString(app: any): Promise<string> {
-  const html = await renderer(app);
+```ts title="remote-app/src/render-to-str.ts"
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+export async function renderToString(app: any, context: any = {}): Promise<string> {
+  // Use require to bypass Rspack ESM static analysis
+  const _vueServerRenderer = require('@vue/server-renderer'); // or 'react-dom/server'
+  const renderer = _vueServerRenderer.renderToString || _vueServerRenderer.default?.renderToString || _vueServerRenderer;
+  
+  const html = await renderer(app, context);
   return `<div id="root"><div data-server-rendered>${html}</div></div>`;
 }
 ```
 
-## 3. Host App Setup
-The Host App imports the `app-creator` and `render-to-str` from the remotes.
+## 2. Host App Configuration (The Hub)
+The Host App initializes the `@esmx/router` and stitches the remote apps together.
 
-**`src/entry.server.ts` (Host App):**
-```ts
-import { Router, RouterMode } from '@esmx/router';
-import { routes } from './routes';
-// Use static imports for SSR rendering functions to bypass Node's ESM/CJS interop crash
-import { renderToString as vue3Render } from 'vue3-app/src/render-to-str';
-import { appCreator as vue3Creator } from 'vue3-app/src/app-creator';
+### 2.1 `src/entry.node.ts`
+Link the remote directories and map their imports.
 
-export default async function render(rc) {
+```ts title="host-app/src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+import http from 'http';
 
-  const router = new Router({
-    mode: RouterMode.memory,
-    base: new URL(rc.params.url || '/', 'http://localhost'),
-    routes,
-    apps: {
-      'vue3-app': () => vue3Creator.appCreator(router, { renderToString: vue3Render.renderToString })
+export default {
+  modules: {
+    links: {
+      'remote-app': '../remote-app/dist'
+    },
+    imports: {
+      'remote-app-routes': 'remote-app/src/routes',
+      'remote-app-creator': 'remote-app/src/app-creator',
+      'remote-app-render': 'remote-app/src/render-to-str',
+      'vue': 'remote-app/vue',
+      '@esmx/router-vue': 'remote-app/@esmx/router-vue'
     }
-  });
-  await router.push(rc.params.url || '/');
-  const html = await router.renderToString(rc);
-  await rc.commit();
-  rc.html = `...inject html...`;
+  },
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m => m.createRspackHtmlApp(esmx));
+  },
+  async server(esmx) {
+    const server = http.createServer((req, res) => {
+      esmx.middleware(req, res, async () => {
+        const rc = await esmx.render({ params: { url: req.url } });
+        res.setHeader('Content-Type', 'text/html');
+        res.end(rc.html);
+      });
+    });
+    server.listen(3000);
+  }
+} satisfies EsmxOptions;
+```
+
+### 2.2 `src/create-app.ts`
+The router instance is created here. The `apps` property maps remote routes to their respective `appCreator`.
+
+```ts title="host-app/src/create-app.ts"
+import { Router } from '@esmx/router';
+import { routes } from './routes';
+
+export async function createApp({ base, url, remoteRenderToStr }: any) {
+    const router = new Router({
+        root: '#root',
+        base: new URL(base),
+        routes,
+        apps: {
+            'remote-app': async (r) => {
+                const m = await import('remote-app-creator');
+                return m.appCreator(r, { renderToString: remoteRenderToStr });
+            }
+        }
+    });
+    await router.replace(url);
+    return router;
 }
 ```
 
-## 4. Vue 2 Specific Requirements
-If generating a Vue 2 remote:
-1. **Dependencies:** `vue@2.7.16`, `vue-server-renderer@2.7.16`, `vue-template-compiler@2.7.16`.
-2. **Rspack Alias:** You MUST add this to `entry.node.ts` `devApp` chain to prevent module resolution errors:
-   `chain.resolve.alias.set('vue$', require.resolve('vue/dist/vue.runtime.esm.js'));`
-3. **App Creation:** Use `new Vue({ router, template: '<router-view></router-view>' })` instead of `createApp()`.
-4. **Renderer:** Use `import { createRenderer } from 'vue-server-renderer'`.
+### 2.3 `src/entry.server.ts`
+During SSR, the host imports the server-only `render-to-str` module from the remote and passes it to the router.
 
-## 5. React Standalone Setup
-React SSR MUST fix duplicate hook errors by aliasing in `entry.node.ts`:
-```ts
-chain.resolve.alias
-  .set('react', require.resolve('react'))
-  .set('react-dom/server', require.resolve('react-dom/server'))
-  .set('react-dom/client', require.resolve('react-dom/client'))
-  .set('react-dom', require.resolve('react-dom'));
+```ts title="host-app/src/entry.server.ts"
+import { createApp } from './create-app';
+
+export default async function render(rc: any) {
+  // Import the remote's SSR renderer
+  const remoteRenderModule = await import('remote-app-render');
+
+  const router = await createApp({
+      base: 'http://localhost:3000',
+      url: rc.params.url || '/',
+      remoteRenderToStr: remoteRenderModule.renderToString
+  });
+
+  const html = await router.renderToString(rc);
+  await rc.commit();
+
+  rc.html = `<!DOCTYPE html><html><head>${rc.preload()}${rc.css()}</head><body>${html}${rc.importmap()}${rc.moduleEntry()}</body></html>`;
+}
 ```
-Always include a catch-all route `{ path: '(.*)', component: NotFound }` in React to prevent 500 errors on `/favicon.ico` SSR requests.
 
-## 6. Production Mode Requirement
-**THE RULE FOR HOST APPS:**
-Do not use `esmx dev` when orchestrating pre-built Micro-Frontends. Node.js's native ESM loader cannot extract named exports from underlying CJS packages (like `@vue/server-renderer` or `react`) during the dynamic graph evaluation of `esmx dev`, leading to `SyntaxError: The requested module ... does not provide an export named ...`
+### 2.4 `src/entry.client.ts`
+On the client, the remote renderer is not needed. The router automatically fetches and mounts the remote app's components.
 
-Instead, you MUST use the build pipeline to test Host Apps locally:
-```bash
-npm run build && npm run start
+```ts title="host-app/src/entry.client.ts"
+import { createApp } from './create-app';
+
+createApp({
+    base: window.location.origin,
+    url: window.location.pathname
+}).then(router => {
+    (window as any).router = router;
+});
 ```
-*(This only applies to the Host app; standalone remote apps can still use `esmx dev` safely).*
+
+## 3. Running the Workspace
+For a Micro-Frontend architecture with module links, you MUST run the build pipeline before starting the server. Running `esmx dev` on the Host App is not supported as it bypasses the necessary chunk bundling.
+
+```json title="package.json (Workspace Root)"
+{
+  "scripts": {
+    "build": "pnpm -r run build",
+    "start": "pnpm --filter host-app run start"
+  }
+}
+```
