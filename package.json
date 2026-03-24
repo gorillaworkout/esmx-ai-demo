@@ -1,0 +1,9 @@
+{
+  "name": "esmx-ai-demo-root",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build",
+    "start": "pnpm -r --parallel run start",
+    "clean": "rm -rf apps/*/dist"
+  }
+}
