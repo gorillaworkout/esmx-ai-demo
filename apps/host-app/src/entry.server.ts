@@ -12,12 +12,14 @@ export default async function render(rc) {
     base: new URL(rc.params.url || '/', 'http://localhost'),
     routes,
     apps: {
-      'vue3-app': (r) => vue3Creator.appCreator(r, {
-        renderToString: vue3Render.renderToString
+      'vanilla': () => ({
+        mount() {}, unmount() {},
+        renderToString(comp) {
+           return `<div id="root">${comp?.template || comp?.component?.template || '<h1>Welcome to ESMX Host</h1>'}</div>`;
+        }
       }),
-      'vue2-app': (r) => vue2Creator.appCreator(r, {
-        renderToString: vue2Render.renderToString
-      })
+      'vue3-app': (r) => vue3Creator.appCreator(r, { renderToString: vue3Render.renderToString }),
+      'vue2-app': (r) => vue2Creator.appCreator(r, { renderToString: vue2Render.renderToString })
     }
   });
 

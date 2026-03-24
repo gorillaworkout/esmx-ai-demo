@@ -4,7 +4,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
-            "file": "src/entry.client.c75784ca.final.mjs",
+            "file": "src/entry.client.e0dd585e.final.mjs",
             "identifier": "react-app/src/entry.client"
         }
     },
@@ -12,12 +12,12 @@
         "": {}
     },
     "files": [
-        "src/entry.client.c75784ca.final.mjs"
+        "src/entry.client.e0dd585e.final.mjs"
     ],
     "chunks": {
         "react-app@src/entry.client.tsx": {
             "name": "react-app@src/entry.client.tsx",
-            "js": "src/entry.client.c75784ca.final.mjs",
+            "js": "src/entry.client.e0dd585e.final.mjs",
             "css": [],
             "resources": []
         }

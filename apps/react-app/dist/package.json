@@ -23,7 +23,7 @@
         "typescript": "^5.9.3"
     },
     "exports": {
-        "./src/entry.client": "./client/src/entry.client.c75784ca.final.mjs",
-        "./src/entry.server": "./server/src/entry.server.5f3f07d8.final.mjs"
+        "./src/entry.client": "./client/src/entry.client.e0dd585e.final.mjs",
+        "./src/entry.server": "./server/src/entry.server.ef3d2e62.final.mjs"
     }
 }

@@ -4,7 +4,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "pkg": false,
-            "file": "src/entry.client.1c2fc471.final.mjs",
+            "file": "src/entry.client.a36a7947.final.mjs",
             "identifier": "host-app/src/entry.client"
         }
     },
@@ -25,16 +25,14 @@
         }
     },
     "files": [
-        "chunks/586.c2f14cc2.final.mjs",
-        "src/entry.client.1c2fc471.final.mjs",
         "chunks/626.061dfc96.final.mjs",
-        "chunks/999.2256f927.final.mjs",
-        "chunks/337.546316dc.final.mjs"
+        "src/entry.client.a36a7947.final.mjs",
+        "chunks/999.2256f927.final.mjs"
     ],
     "chunks": {
         "host-app@src/entry.client.ts": {
             "name": "host-app@src/entry.client.ts",
-            "js": "src/entry.client.1c2fc471.final.mjs",
+            "js": "src/entry.client.a36a7947.final.mjs",
             "css": [],
             "resources": []
         }

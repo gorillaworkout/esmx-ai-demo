@@ -27,7 +27,7 @@ export default {
     }
   },
   async devApp(esmx) {
-    return import('@esmx/rspack-vue').then(m => m.createRspackVue3App(esmx));
+    return import('@esmx/rspack').then(m => m.createRspackHtmlApp(esmx));
   },
   async server(esmx) {
     const server = http.createServer((req, res) => {

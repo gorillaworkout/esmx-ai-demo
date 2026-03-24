@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
-    "start": "pnpm --filter host-app --filter react-app --parallel run start",
+    "start": "pnpm --filter host-app run start",
     "clean": "rm -rf apps/*/dist"
   }
 }

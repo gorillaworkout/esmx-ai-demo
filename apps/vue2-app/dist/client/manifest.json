@@ -33,9 +33,9 @@
         }
     },
     "files": [
+        "vue.308b5600.final.mjs",
         "src/app-creator.fecb4024.final.mjs",
         "@esmx/router-vue.d32c91d0.final.mjs",
-        "vue.308b5600.final.mjs",
         "src/routes.d91bb3af.final.mjs"
     ],
     "chunks": {
