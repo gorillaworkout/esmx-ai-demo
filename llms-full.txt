@@ -10401,25 +10401,27 @@ url: /guide/ai-master-guide.md
 ---
 url: /guide/ai-master-guide.md
 ---
-# 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-> **ATTENTION AI ASSISTANTS:** Read this section carefully before generating any code. ESMX 3.0 has strict architectural boundaries for Micro-Frontends (MFE). Failure to follow these rules will result in `SyntaxError`, `ReferenceError`, or 500 Internal Server Errors.
-
-## 1. The Golden Architecture Rule (Vue Hub + React Standalone)
-ESMX's Module Linking is designed for **same-ecosystem sharing**. You MUST use this architecture:
-- **Host App (Hub)**: Must be a Vue 3 application. It seamlessly orchestrates Vue 3 and Vue 2 remote apps within a single router.
-- **React Apps**: MUST be generated as **100% standalone applications** running on their own ports (e.g., `3007`). 
-- **DO NOT** attempt to import a React remote into a Vue Host App via SSR. The Node.js native ESM loader combined with Rspack's CJS hoisting will crash the server. Link to React apps using standard `<a href="http://localhost:3007">` tags.
 
 ---
+url: /guide/ai-master-guide.md
+---
+# 🤖 MASTER AI IMPLEMENTATION GUIDE FOR ESMX 3.0
 
-## 2. Remote Vue Apps (Seamless Spokers)
-Vue 2 and Vue 3 remote apps must be compiled as libraries.
+> **ATTENTION AI ASSISTANTS:** Read this section carefully. ESMX 3.0 has specific architectural boundaries for Micro-Frontends (MFE). Node.js v22 ESM loaders strictly enforce CJS/ESM interop, which impacts how React and Vue are bundled and loaded on the server side.
 
-### `src/entry.node.ts`
+## SECTION 1: STABLE ARCHITECTURE (RECOMMENDED)
+Use this architecture to guarantee a working project without runtime crashes. This provides a clear, reliable path to ESMX federation.
+
+- **Host App (Hub)**: Vue 3 application acting as the main router.
+- **Seamless Remotes**: Vue 2 and Vue 3 apps compiled as `lib: true`. They load instantly without page reloads.
+- **Standalone Remotes**: React 19 apps compiled as `lib: false` running on their own port (e.g., 3007). Link to them via standard `<a href="http://localhost:3007">` tags.
+
+### 1.1 Remote Vue Apps (Seamless)
+**`src/entry.node.ts`:**
 ```ts
 import type { EsmxOptions } from '@esmx/core';
-// For Vue 2, you must alias: chain.resolve.alias.set('vue$', require.resolve('vue/dist/vue.runtime.esm.js'));
+// For Vue 2, you MUST alias: chain.resolve.alias.set('vue$', require.resolve('vue/dist/vue.runtime.esm.js'));
 
 export default {
   modules: {
@@ -10427,18 +10429,18 @@ export default {
     exports: [
       'root:src/routes.ts',
       'root:src/app-creator.ts',
-      { 'src/render-to-str': { client: false, server: './src/render-to-str.ts' } }, // Server-only!
+      { 'src/render-to-str': { client: false, server: './src/render-to-str.ts' } }, // SERVER ONLY!
       'pkg:vue',
       'pkg:@esmx/router-vue'
     ]
   },
   async devApp(esmx) {
-    return import('@esmx/rspack-vue').then(m => m.createRspackVue3App(esmx));
+    return import('@esmx/rspack-vue').then(m => m.createRspackVue3App(esmx)); // or Vue2App
   }
 } satisfies EsmxOptions;
 ```
 
-### `src/app-creator.ts`
+**`src/app-creator.ts`:**
 ```ts
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
@@ -10460,8 +10462,8 @@ export const appCreator = (router: Router, { renderToString }: any = {}): Router
 };
 ```
 
-### `src/render-to-str.ts` (Server Only)
-**CRITICAL:** You MUST use `require()` to bypass Rspack ESM rewriting for CJS packages to prevent dev/start crashes.
+**`src/render-to-str.ts` (Server Only):**
+*CRITICAL:* Use `require()` to bypass Rspack ESM static analysis for CJS packages to prevent dev/start crashes!
 ```ts
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -10474,12 +10476,8 @@ export async function renderToString(app: any, context: any = {}): Promise<strin
 }
 ```
 
----
-
-## 3. Host App Configuration (The Vue Hub)
-The Host App initializes the `@esmx/router` and stitches the Vue remotes together.
-
-### `src/entry.node.ts`
+### 1.2 Host App Configuration (The Vue Hub)
+**`src/entry.node.ts`:**
 ```ts
 import type { EsmxOptions } from '@esmx/core';
 import http from 'http';
@@ -10509,23 +10507,9 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### `src/routes.ts`
+**`src/entry.server.ts` & `src/entry.client.ts`:**
 ```ts
-import { routes as vue3Routes } from 'vue3-app-routes';
-
-export const routes = [
-  {
-    path: '/',
-    app: 'vanilla',
-    component: { template: '<h1>Hub</h1><a href="/vue3">Vue</a> <a href="http://localhost:3007">React Standalone</a>' }
-  },
-  ...vue3Routes
-];
-```
-
-### `src/entry.server.ts` & `src/entry.client.ts`
-```ts
-// SERVER
+// SERVER EXAMPLE (Client uses similar apps mapping but with history mode and app.mount)
 import { Router, RouterMode } from '@esmx/router';
 import { routes } from './routes';
 
@@ -10550,43 +10534,64 @@ export default async function render(rc: any) {
 }
 ```
 
----
-
-## 4. React Standalone Setup
-React apps cannot be seamlessly linked into a Vue Host in ESMX 3.0 due to Node.js ESM strictness. Build them as standalone apps with `lib: false` (default).
-
-### `src/entry.node.ts`
-**CRITICAL:** You must alias React to prevent duplicate hook errors.
+### 1.3 React Standalone (Port 3007)
+React MUST alias itself in `entry.node.ts` to avoid duplicate hook errors.
 ```ts
-import type { EsmxOptions } from '@esmx/core';
-import { createRequire } from 'module';
-import http from 'http';
-const require = createRequire(import.meta.url);
-
-export default {
-  async devApp(esmx) {
-    return import('@esmx/rspack-react').then(m => m.createRspackReactApp(esmx, {
-      chain({ chain }) {
-        chain.resolve.alias
-          .set('react', require.resolve('react'))
-          .set('react-dom/server', require.resolve('react-dom/server'))
-          .set('react-dom/client', require.resolve('react-dom/client'))
-          .set('react-dom', require.resolve('react-dom'));
-      }
-    }));
-  },
-  async server(esmx) {
-    const server = http.createServer((req, res) => {
-      esmx.middleware(req, res, async () => {
-        const rc = await esmx.render({ params: { url: req.url } });
-        res.setHeader('Content-Type', 'text/html');
-        res.end(rc.html);
-      });
-    });
-    server.listen(3007);
-  }
-} satisfies EsmxOptions;
+chain.resolve.alias
+  .set('react', require.resolve('react'))
+  .set('react-dom/server', require.resolve('react-dom/server'))
+  .set('react-dom/client', require.resolve('react-dom/client'))
+  .set('react-dom', require.resolve('react-dom'));
 ```
 
-## 5. Execution Rule
+---
+
+## SECTION 2: ADVANCED SEAMLESS ARCHITECTURE (TARGET)
+To achieve a completely seamless MFE where React runs inside the Vue Host WITHOUT reloading (like `my-super-app`), you must solve the Node.js CJS/ESM Interop issue. 
+If you simply export React, Node.js will throw: `SyntaxError: The requested module 'react' does not provide an export named 'useSyncExternalStore'`.
+
+**Requirements for Seamless React In-Host:**
+1. **Downgrade React to `18.2.0`**. React 19's bundle shape makes AST manipulation difficult.
+2. **Inject a Custom Rspack Plugin (`CjsEsmWrapperPlugin`)** in the React Remote's `entry.node.ts`. This plugin intercepts the emitted React chunk and appends explicit `export var ...` statements so the Node.js ESM loader can recognize the named exports.
+3. Include React in the Host's `imports` and `routes`.
+
+**The CJS/ESM Wrapper Plugin Snippet:**
+```ts
+function createCjsEsmWrapperPlugin(pkgExports: Record<string, string[]>) {
+    const pkgNames = Object.keys(pkgExports);
+    return class CjsEsmWrapperPlugin {
+        apply(compiler: any) {
+            compiler.hooks.thisCompilation.tap('CjsEsmWrapperPlugin', (compilation: any) => {
+                compilation.hooks.processAssets.tap(
+                    { name: 'CjsEsmWrapperPlugin', stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE },
+                    (assets: any) => {
+                        for (const [filename, source] of Object.entries(assets)) {
+                            const matchedPkg = pkgNames.find((pkg) => filename.startsWith(pkg + '.'));
+                            if (!matchedPkg) continue;
+
+                            const content = source.source().toString();
+                            const entryMatch = content.match(/}\((\d+)\);?\s*$/);
+                            if (!entryMatch) continue;
+                            const entryId = entryMatch[1];
+
+                            const cacheMatch = content.match(/,(\w+)=\{\};!function/);
+                            if (!cacheMatch) continue;
+                            const cacheVar = cacheMatch[1];
+
+                            const namedExports = pkgExports[matchedPkg];
+                            const exportLines = namedExports.map((name) => `export var ${name} = __cjs_mod__.${name};`).join('\n');
+                            const wrappedContent = content + `\nvar __cjs_mod__ = ${cacheVar}[${entryId}].exports;\nexport default __cjs_mod__;\n${exportLines}`;
+
+                            compilation.updateAsset(filename, new compiler.webpack.sources.RawSource(wrappedContent));
+                        }
+                    }
+                );
+            });
+        }
+    };
+}
+```
+*(If attempting this advanced path, refer to the `my-super-app` reference architecture for full integration).*
+
+## 3. Execution Rule
 Always run `pnpm -r run build` followed by `pnpm start` to test Host Apps locally. Running `esmx dev` on a Host App orchestrating remotes is unsupported.
